@@ -1,0 +1,56 @@
+name: Build VarantMatik V8 APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Depoyu al
+        uses: actions/checkout@v4
+
+      - name: Java 17 kur
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Android SDK kur
+        uses: android-actions/setup-android@v3
+
+      - name: Android platform ve build-tools kur
+        run: |
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager "platforms;android-36" "build-tools;36.0.0"
+
+      - name: Gradle 9.6 kur
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.6.0'
+
+      - name: Kaynak projeyi aç
+        run: |
+          rm -rf .ci_build
+          mkdir -p .ci_build
+          unzip -q VarantMatik_V8_Master_Source_Validated.zip -d .ci_build
+          test -f .ci_build/VarantMatik_V8_Master/settings.gradle
+
+      - name: Analiz motoru testlerini çalıştır
+        working-directory: .ci_build/VarantMatik_V8_Master
+        run: bash tools/run_core_tests.sh
+
+      - name: APK oluştur
+        working-directory: .ci_build/VarantMatik_V8_Master
+        run: gradle :app:assembleDebug --stacktrace
+
+      - name: APK dosyasını yükle
+        uses: actions/upload-artifact@v4
+        with:
+          name: VarantMatik-V8-debug-apk
+          path: .ci_build/VarantMatik_V8_Master/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
