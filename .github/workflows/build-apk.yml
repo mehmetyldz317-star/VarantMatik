@@ -15,18 +15,19 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Java 17 kur
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '17'
 
-      - name: Android SDK kur
-        uses: android-actions/setup-android@v3
-
-      - name: Android platform ve build-tools kur
+      - name: Android SDK paketlerini kur
+        shell: bash
         run: |
-          yes | sdkmanager --licenses >/dev/null || true
-          sdkmanager "platforms;android-36" "build-tools;36.0.0"
+          export ANDROID_HOME=/usr/local/lib/android/sdk
+          export ANDROID_SDK_ROOT=/usr/local/lib/android/sdk
+          SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          yes | "$SDKMANAGER" --licenses >/dev/null || true
+          "$SDKMANAGER" "platform-tools" "platforms;android-36" "build-tools;36.0.0"
 
       - name: Gradle 9.6 kur
         uses: gradle/actions/setup-gradle@v4
@@ -34,6 +35,7 @@ jobs:
           gradle-version: '9.6.0'
 
       - name: Kaynak projeyi aç
+        shell: bash
         run: |
           rm -rf .ci_build
           mkdir -p .ci_build
