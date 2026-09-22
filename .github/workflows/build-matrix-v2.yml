@@ -1,4 +1,4 @@
-name: Build Matrix Evreni V2 Real Data
+name: Build Matrix Evreni V2 Real Data Stable
 
 on:
   workflow_dispatch:
@@ -44,14 +44,14 @@ jobs:
           "$ANDROID_HOME/build-tools/36.0.0/zipalign" -c -v 4 "$APK"
           "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs "$APK" | tee apk-signature.txt
           "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging "$APK" | tee apk-badging.txt
-          grep "package: name='com.matrixevreni.app'" apk-badging.txt
-          grep "versionCode='20'" apk-badging.txt
+          grep "package: name='com.matrixevreni.v2'" apk-badging.txt
+          grep "versionCode='200'" apk-badging.txt
           grep "targetSdkVersion:'35'" apk-badging.txt
           grep "android.permission.INTERNET" <("$ANDROID_HOME/build-tools/36.0.0/aapt" dump permissions "$APK")
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Matrix-Evreni-V2-RealData-validated-apk
+          name: Matrix-Evreni-V2-RealData-Stable-apk
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
