@@ -11,8 +11,8 @@ android {
         applicationId = "com.matrixevreni.app"
         minSdk = 24
         targetSdk = 35
-        versionCode = 13
-        versionName = "1.2.1-clean"
+        versionCode = 20
+        versionName = "2.0.0"
     }
 
     buildTypes {

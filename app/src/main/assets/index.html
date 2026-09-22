@@ -1,7 +1,200 @@
 <!doctype html>
-<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><meta name="theme-color" content="#020704"><title>Matrix Evreni</title>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#020704">
+<title>Matrix Evreni V2</title>
 <style>
-:root{--bg:#020704;--panel:#07120c;--g:#63ff96;--g2:#22c55e;--muted:#6f9a7c;--red:#ff6262;--white:#f4fff7}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;height:100%;background:var(--bg);color:var(--white);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;overflow:hidden}.app{height:100%;display:flex;flex-direction:column;position:relative}.rain{position:absolute;inset:0;overflow:hidden;pointer-events:none;opacity:.22}.col{position:absolute;top:-30%;font:12px/14px monospace;color:#48ff88;white-space:pre;animation:fall linear infinite}@keyframes fall{to{transform:translateY(145vh)}}header{padding:16px 16px 10px;position:relative;z-index:2;background:linear-gradient(#020704 70%,transparent)}.title{font-weight:800;letter-spacing:.8px;color:var(--g);font-size:21px}.sub{font:10px monospace;color:#6e9a7d;margin-top:3px}.index{margin-top:10px;border:1px solid #173d27;background:#07110bdf;border-radius:18px;padding:11px 14px;display:flex;align-items:center;justify-content:space-between}.index small{display:block;color:#7fa68a;font-size:10px}.idx{font-size:20px;font-weight:800;margin-top:2px}.chg.up{color:var(--g)}.chg.down{color:var(--red)}.badge{font:9px monospace;color:#7fa68a;margin-top:2px;text-align:right}main{flex:1;min-height:0;position:relative;z-index:1}.view{display:none;height:100%;overflow:auto;padding:0 14px 78px}.view.active{display:block}.universe{position:relative;height:100%;min-height:520px}.orbit{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);width:min(92vw,420px);aspect-ratio:1;border:1px solid #1d5934;border-radius:50%;box-shadow:0 0 45px #0c6b3229 inset}.orbit:before,.orbit:after{content:"";position:absolute;border:1px solid #173e29;border-radius:50%;inset:14%}.orbit:after{inset:31%}.core{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:104px;height:104px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;background:radial-gradient(circle,#29ff7a55,#0a512977 45%,#04140c 70%);border:1px solid #41e97b;box-shadow:0 0 35px #38ff7a55}.core b{font-size:16px}.core span{font:9px monospace;color:var(--g)}.node{position:absolute;width:52px;height:52px;border-radius:50%;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;background:#07110c;border:1px solid var(--g2);font-size:8px;font-weight:800;color:white;box-shadow:0 0 18px #22c55e33;transition:.25s}.node.down{border-color:#e85f5f;box-shadow:0 0 18px #ff626233}.hint{position:absolute;bottom:10px;left:0;right:0;text-align:center;color:#779b81;font:10px monospace}.sectionTitle{font-size:16px;font-weight:800;margin:16px 2px 4px}.sectionSub{font:10px monospace;color:#73967e;margin:0 2px 14px}.row{background:#07110be8;border:1px solid #122e20;border-radius:14px;padding:11px 12px;margin:8px 0;display:flex;justify-content:space-between;align-items:center}.sym{font-weight:800}.price{font:11px monospace;color:#9db2a5;margin-top:3px}.pct{font:12px monospace;font-weight:800}.pct.up{color:var(--g)}.pct.down{color:var(--red)}nav{height:64px;position:absolute;left:0;right:0;bottom:0;background:#040c08f5;border-top:1px solid #102b1c;display:flex;z-index:5;padding:7px 8px}.tab{flex:1;border:0;background:transparent;color:#6e9279;border-radius:14px;font-weight:800;font-size:10px}.tab.active{background:#0d3e22;color:var(--g)}.sheet{position:absolute;inset:0;background:#000a;z-index:20;display:none;align-items:flex-end}.sheet.show{display:flex}.card{width:100%;background:#06110a;border:1px solid #235c36;border-radius:24px 24px 0 0;padding:18px 18px 28px;min-height:54%}.cardTop{display:flex;justify-content:space-between}.card h2{margin:0;font-size:26px}.demo{font:9px monospace;color:#71987c}.big{font-size:25px;font-weight:800;text-align:right}.mini{height:150px;margin:22px 0 14px;border-radius:16px;background:#030906;border:1px solid #102a1b;position:relative;overflow:hidden}.mini svg{width:100%;height:100%}.facts{display:grid;grid-template-columns:1fr 1fr;gap:10px}.fact{background:#091a10;border-radius:12px;padding:11px}.fact small{display:block;color:#7d9a84;font-size:9px}.fact b{display:block;margin-top:5px}.fav{margin-top:14px;width:100%;height:44px;border:1px solid #2e7848;border-radius:12px;background:#0b2a18;color:var(--g);font-weight:800}.close{margin-top:10px;width:100%;height:38px;border:0;background:transparent;color:#7c9a85}
-</style></head><body><div class="app"><div class="rain" id="rain"></div><header><div class="title">MATRIX EVRENİ</div><div class="sub">KİŞİSEL PİYASA PANELİ • DEMO AKIŞ</div><div class="index"><div><small>BIST 30</small><div class="idx" id="idx">13.242,6</div></div><div><div class="chg up">▲ +0,84%</div><div class="badge">SİMÜLASYON</div></div></div></header><main><section id="v0" class="view active"><div class="universe"><div class="orbit" id="orbit"><div class="core"><b>XU030</b><span>CANLI ÇEKİRDEK</span></div></div><div class="hint">Dokun → detay • Küre = hareket • Renk = yön</div></div></section><section id="v1" class="view"><div class="sectionTitle">PİYASA AKIŞI</div><div class="sectionSub">Matrix kodlarının arasından son hareketler</div><div id="tape"></div></section><section id="v2" class="view"><div class="sectionTitle">BENİM EVRENİM</div><div class="sectionSub">Yıldızladığın hisseler burada</div><div id="favs"></div></section></main><nav><button class="tab active" data-t="0">EVREN</button><button class="tab" data-t="1">AKIŞ</button><button class="tab" data-t="2">FAVORİLER</button></nav><div class="sheet" id="sheet"><div class="card"><div class="cardTop"><div><h2 id="ds">THYAO</h2><div class="demo">DEMO PİYASA VERİSİ</div></div><div><div class="big" id="dp">318,25</div><div class="pct up" id="dc">+1,42%</div></div></div><div class="mini"><svg viewBox="0 0 320 120" preserveAspectRatio="none"><polyline id="line" fill="none" stroke="#63ff96" stroke-width="2" points="0,90 20,80 40,84 60,60 80,66 100,48 120,54 140,38 160,46 180,30 200,34 220,18 240,25 260,20 280,13 320,18"/></svg></div><div class="facts"><div class="fact"><small>HACİM</small><b id="dv">128,4 M</b></div><div class="fact"><small>GÜN YÖNÜ</small><b id="dd">YUKARI</b></div></div><button id="favbtn" class="fav">☆ BENİM EVRENİME EKLE</button><button id="close" class="close">KAPAT</button></div></div></div><script>
-const syms=['AKBNK','ASELS','ASTOR','BIMAS','EKGYO','ENKAI','EREGL','FROTO','GARAN','GUBRF','ISCTR','KCHOL','KRDMD','MGROS','PETKM','PGSUS','SAHOL','SASA','SISE','TAVHL','TCELL','THYAO','TOASO','TTKOM','TUPRS','VAKBN','YKBNK','AEFES'];const stocks=syms.map((s,i)=>({s,p:35+Math.random()*330,c:-2.4+Math.random()*4.8,v:40+Math.random()*190,i}));let fav=new Set(JSON.parse(localStorage.getItem('mxFav')||'[]'));let current=null;const fmt=n=>n.toLocaleString('tr-TR',{minimumFractionDigits:2,maximumFractionDigits:2});function rain(){let r=document.getElementById('rain');for(let i=0;i<45;i++){let d=document.createElement('div');d.className='col';d.style.left=(Math.random()*100)+'%';d.style.animationDuration=(5+Math.random()*8)+'s';d.style.animationDelay=(-Math.random()*12)+'s';let t='';for(let j=0;j<18;j++)t+=(Math.random()>.5?'1':'0')+'\n';d.textContent=t;r.appendChild(d)}}function layout(){let o=document.getElementById('orbit');o.querySelectorAll('.node').forEach(x=>x.remove());stocks.forEach((s,i)=>{let a=(Math.PI*2*i/stocks.length)-Math.PI/2;let rad=(i%2?42:31);let x=50+Math.cos(a)*rad,y=50+Math.sin(a)*rad;let n=document.createElement('button');n.className='node '+(s.c<0?'down':'');n.style.left=x+'%';n.style.top=y+'%';n.textContent=s.s;n.onclick=()=>openStock(s);o.appendChild(n)})}function rows(list,target){target.innerHTML='';list.forEach(s=>{let d=document.createElement('div');d.className='row';d.innerHTML='<div><div class="sym">'+s.s+'</div><div class="price">'+fmt(s.p)+' TL</div></div><div class="pct '+(s.c>=0?'up':'down')+'">'+(s.c>=0?'+':'')+fmt(s.c)+'%</div>';d.onclick=()=>openStock(s);target.appendChild(d)});if(!list.length)target.innerHTML='<div class="sectionSub" style="text-align:center;margin-top:120px">Henüz favori yok.</div>'}function openStock(s){current=s;ds.textContent=s.s;dp.textContent=fmt(s.p);dc.textContent=(s.c>=0?'+':'')+fmt(s.c)+'%';dc.className='pct '+(s.c>=0?'up':'down');dv.textContent=fmt(s.v)+' M';dd.textContent=s.c>=0?'YUKARI':'AŞAĞI';dd.style.color=s.c>=0?'#63ff96':'#ff6262';line.setAttribute('stroke',s.c>=0?'#63ff96':'#ff6262');favbtn.textContent=fav.has(s.s)?'★ FAVORİDEN ÇIKAR':'☆ BENİM EVRENİME EKLE';sheet.classList.add('show')}function tick(){stocks.forEach(s=>{s.p=Math.max(1,s.p+(Math.random()-.5)*.45);s.c=Math.max(-9.8,Math.min(9.8,s.c+(Math.random()-.5)*.04))});let i=stocks[Math.floor(Math.random()*stocks.length)];let row=document.createElement('div');row.className='row';row.innerHTML='<div><div class="sym">'+i.s+'</div><div class="price">'+fmt(i.p)+' TL</div></div><div class="pct '+(i.c>=0?'up':'down')+'">'+(i.c>=0?'▲ +':'▼ ')+fmt(Math.abs(i.c))+'%</div>';row.onclick=()=>openStock(i);tape.prepend(row);while(tape.children.length>12)tape.lastChild.remove();let iv=13242.6+(Math.random()-.5)*15;idx.textContent=iv.toLocaleString('tr-TR',{minimumFractionDigits:1,maximumFractionDigits:1});layout();if(document.getElementById('v2').classList.contains('active'))rows(stocks.filter(s=>fav.has(s.s)),favs)}document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById('v'+b.dataset.t).classList.add('active');if(b.dataset.t==='2')rows(stocks.filter(s=>fav.has(s.s)),favs)});close.onclick=()=>sheet.classList.remove('show');sheet.onclick=e=>{if(e.target===sheet)sheet.classList.remove('show')};favbtn.onclick=()=>{if(!current)return;if(fav.has(current.s))fav.delete(current.s);else fav.add(current.s);localStorage.setItem('mxFav',JSON.stringify([...fav]));favbtn.textContent=fav.has(current.s)?'★ FAVORİDEN ÇIKAR':'☆ BENİM EVRENİME EKLE'};rain();layout();rows(stocks.slice(0,8),tape);setInterval(tick,1100);
-</script></body></html>
+:root{--bg:#020704;--panel:#07120c;--g:#63ff96;--g2:#22c55e;--muted:#769681;--red:#ff6868;--amber:#e9c46a;--white:#f4fff7}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--white);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;overflow:hidden}
+button{font:inherit}.app{height:100%;display:flex;flex-direction:column;position:relative}.rain{position:absolute;inset:0;overflow:hidden;pointer-events:none;opacity:.16}
+.col{position:absolute;top:-35%;font:12px/14px monospace;color:#48ff88;white-space:pre;animation:fall linear infinite}@keyframes fall{to{transform:translateY(150vh)}}
+header{padding:12px 14px 8px;position:relative;z-index:2;background:linear-gradient(#020704 82%,transparent)}
+.topline{display:flex;justify-content:space-between;align-items:flex-start}.title{font-weight:900;letter-spacing:.7px;color:var(--g);font-size:20px;line-height:1}
+.sub{font:9px monospace;color:#6e9a7d;margin-top:5px}.refresh{border:1px solid #245c39;background:#082313;color:var(--g);border-radius:10px;padding:7px 9px;font-size:10px;font-weight:800}
+.index{margin-top:9px;border:1px solid #173d27;background:#07110be8;border-radius:17px;padding:10px 13px;display:flex;align-items:center;justify-content:space-between}
+.index small{display:block;color:#7fa68a;font-size:9px}.idx{font-size:20px;font-weight:900;margin-top:1px}.chg.up{color:var(--g)}.chg.down{color:var(--red)}.chg.flat{color:var(--amber)}
+.badge{font:8px monospace;color:#8baa94;margin-top:2px;text-align:right}.status{font:8px monospace;color:#6f917a;margin-top:4px;text-align:right}
+.pulse{margin-top:8px;display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.pulseBox{background:#07110bd9;border:1px solid #12351f;border-radius:11px;padding:7px 6px;text-align:center}
+.pulseBox small{font-size:7px;color:#779681;display:block}.pulseBox b{font:11px monospace;display:block;margin-top:3px}.green{color:var(--g)}.red{color:var(--red)}.amber{color:var(--amber)}
+main{flex:1;min-height:0;position:relative;z-index:1}.view{display:none;height:100%;overflow:auto;padding:0 12px 76px}.view.active{display:block}
+.universe{position:relative;height:100%;min-height:525px}.orbit{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);width:min(94vw,430px);aspect-ratio:1;border:1px solid #1d5934;border-radius:50%;box-shadow:0 0 45px #0c6b3229 inset}
+.orbit:before,.orbit:after{content:"";position:absolute;border:1px solid #173e29;border-radius:50%;inset:14%}.orbit:after{inset:31%}.core{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:104px;height:104px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;background:radial-gradient(circle,#29ff7a55,#0a512977 45%,#04140c 70%);border:1px solid #41e97b;box-shadow:0 0 35px #38ff7a55}
+.core b{font-size:17px}.core span{font:8px monospace;color:var(--g)}.node{position:absolute;border-radius:50%;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;background:#06100b;border:1px solid var(--g2);font-size:8px;font-weight:900;color:white;box-shadow:0 0 16px #22c55e33;transition:.35s;min-width:42px;min-height:42px}
+.node.down{border-color:#e85f5f;box-shadow:0 0 16px #ff626233}.node.flat{border-color:#c8a85a}.hint{position:absolute;bottom:8px;left:0;right:0;text-align:center;color:#779b81;font:9px monospace}
+.sectionTitle{font-size:16px;font-weight:900;margin:16px 2px 4px}.sectionSub{font:9px monospace;color:#73967e;margin:0 2px 12px}.row{background:#07110be8;border:1px solid #153722;border-radius:14px;padding:10px 12px;margin:7px 0;display:flex;justify-content:space-between;align-items:center}
+.sym{font-weight:900;font-size:14px}.price{font:10px monospace;color:#9db2a5;margin-top:3px}.pct{font:11px monospace;font-weight:900}.pct.up{color:var(--g)}.pct.down{color:var(--red)}.pct.flat{color:var(--amber)}
+.meta{font:8px monospace;color:#668a72;margin-top:3px;text-align:right}.empty{text-align:center;color:#789783;font:10px monospace;margin-top:120px}
+nav{height:62px;position:absolute;left:0;right:0;bottom:0;background:#040c08f7;border-top:1px solid #102b1c;display:flex;z-index:5;padding:7px 7px}.tab{flex:1;border:0;background:transparent;color:#6e9279;border-radius:14px;font-weight:900;font-size:9px}.tab.active{background:#0d3e22;color:var(--g)}
+.sheet{position:absolute;inset:0;background:#000b;z-index:20;display:none;align-items:flex-end}.sheet.show{display:flex}.card{width:100%;background:#06110a;border:1px solid #235c36;border-radius:24px 24px 0 0;padding:17px 17px 24px;min-height:56%}
+.cardTop{display:flex;justify-content:space-between}.card h2{margin:0;font-size:25px}.sourceLabel{font:8px monospace;color:#71987c}.big{font-size:24px;font-weight:900;text-align:right}.mini{height:135px;margin:18px 0 12px;border-radius:15px;background:#030906;border:1px solid #102a1b;position:relative;overflow:hidden}.mini svg{width:100%;height:100%}
+.facts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}.fact{background:#091a10;border-radius:11px;padding:9px}.fact small{display:block;color:#7d9a84;font-size:7px}.fact b{display:block;margin-top:4px;font-size:11px}.fav{margin-top:12px;width:100%;height:42px;border:1px solid #2e7848;border-radius:12px;background:#0b2a18;color:var(--g);font-weight:900}.close{margin-top:7px;width:100%;height:34px;border:0;background:transparent;color:#7c9a85}
+.note{font:8px monospace;color:#78917f;text-align:center;margin-top:7px}.error{color:var(--red)!important}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="rain" id="rain"></div>
+<header>
+  <div class="topline">
+    <div><div class="title">MATRIX EVRENİ <span style="font-size:9px;color:#7aa889">V2</span></div><div class="sub">KİŞİSEL PİYASA MERKEZİ • GERÇEK VERİ MODU</div></div>
+    <button class="refresh" id="refreshBtn">↻ YENİLE</button>
+  </div>
+  <div class="index">
+    <div><small>BIST 30 • XU030</small><div class="idx" id="idx">Veri bekleniyor</div></div>
+    <div><div class="chg flat" id="idxChg">—</div><div class="badge" id="sourceBadge">YAHOO • GECİKMELİ OLABİLİR</div><div class="status" id="statusLine">Bağlanıyor…</div></div>
+  </div>
+  <div class="pulse">
+    <div class="pulseBox"><small>YEŞİL</small><b class="green" id="greenCount">—</b></div>
+    <div class="pulseBox"><small>KIRMIZI</small><b class="red" id="redCount">—</b></div>
+    <div class="pulseBox"><small>ORT. DEĞİŞİM</small><b id="avgChange">—</b></div>
+    <div class="pulseBox"><small>EN HAREKETLİ</small><b class="amber" id="topMover">—</b></div>
+  </div>
+</header>
+<main>
+  <section id="v0" class="view active"><div class="universe"><div class="orbit" id="orbit"><div class="core"><b>XU030</b><span id="coreState">VERİ BEKLİYOR</span></div></div><div class="hint">Küre büyüklüğü = hacim • renk = günlük yön • dokun = detay</div></div></section>
+  <section id="v1" class="view"><div class="sectionTitle">HAREKET MERKEZİ</div><div class="sectionSub">Mutlak günlük değişime göre sıralı gerçek piyasa verisi</div><div id="tape"></div></section>
+  <section id="v2" class="view"><div class="sectionTitle">BENİM EVRENİM</div><div class="sectionSub">Favorilerindeki gerçek fiyat ve hareketler</div><div id="favs"></div></section>
+</main>
+<nav><button class="tab active" data-t="0">EVREN</button><button class="tab" data-t="1">HAREKET</button><button class="tab" data-t="2">FAVORİLER</button></nav>
+<div class="sheet" id="sheet"><div class="card">
+  <div class="cardTop"><div><h2 id="ds">—</h2><div class="sourceLabel">YAHOO FINANCE • GECİKMELİ OLABİLİR</div></div><div><div class="big" id="dp">—</div><div class="pct flat" id="dc">—</div></div></div>
+  <div class="mini"><svg viewBox="0 0 320 120" preserveAspectRatio="none"><polyline id="line" fill="none" stroke="#63ff96" stroke-width="2" points="0,60 320,60"/></svg></div>
+  <div class="facts">
+    <div class="fact"><small>HACİM</small><b id="dv">—</b></div>
+    <div class="fact"><small>GÜN YÜKSEK</small><b id="dh">—</b></div>
+    <div class="fact"><small>GÜN DÜŞÜK</small><b id="dl">—</b></div>
+    <div class="fact"><small>ÖNCEKİ KAPANIŞ</small><b id="dprev">—</b></div>
+    <div class="fact"><small>PİYASA</small><b id="dstate">—</b></div>
+    <div class="fact"><small>SON VERİ</small><b id="dtime">—</b></div>
+  </div>
+  <button id="favbtn" class="fav">☆ BENİM EVRENİME EKLE</button>
+  <div class="note">Bu ekran yatırım tavsiyesi üretmez; veriyi düzenleyip gösterir.</div>
+  <button id="close" class="close">KAPAT</button>
+</div></div>
+</div>
+
+<script>
+const beforeOct=['AKBNK','ASELS','ASTOR','BIMAS','DSTKF','EKGYO','ENKAI','EREGL','FROTO','GARAN','GUBRF','ISCTR','KCHOL','KRDMD','MGROS','PETKM','PGSUS','SAHOL','SASA','SISE','TAVHL','TCELL','THYAO','TOASO','TRALT','TTKOM','TUPRS','VAKBN','YKBNK','AEFES'];
+const afterOct=beforeOct.map(s=>s==='DSTKF'?'TRMET':s);
+const octCut=new Date('2026-10-01T00:00:00+03:00');
+const symbols=(new Date()>=octCut?afterOct:beforeOct);
+let stocks=symbols.map((s,i)=>({s,p:null,c:null,v:null,hi:null,lo:null,prev:null,state:'',mt:0,i,h:[]}));
+let bySymbol=Object.fromEntries(stocks.map(s=>[s,s]));
+let fav=new Set(JSON.parse(localStorage.getItem('mxFav')||'[]'));
+let current=null;
+let lastGood=JSON.parse(localStorage.getItem('mxLastGood')||'null');
+const el=id=>document.getElementById(id);
+const fmt=(n,d=2)=>Number.isFinite(n)?n.toLocaleString('tr-TR',{minimumFractionDigits:d,maximumFractionDigits:d}):'—';
+const pct=n=>Number.isFinite(n)?((n>=0?'+':'')+fmt(n,2)+'%'):'—';
+const vol=n=>{if(!Number.isFinite(n))return'—';if(n>=1e9)return fmt(n/1e9,2)+' Mr';if(n>=1e6)return fmt(n/1e6,1)+' Mn';if(n>=1e3)return fmt(n/1e3,0)+' B';return fmt(n,0)};
+const dirClass=n=>!Number.isFinite(n)||Math.abs(n)<0.005?'flat':n>0?'up':'down';
+
+function rain(){const r=el('rain');for(let i=0;i<42;i++){let d=document.createElement('div');d.className='col';d.style.left=(Math.random()*100)+'%';d.style.animationDuration=(6+Math.random()*8)+'s';d.style.animationDelay=(-Math.random()*12)+'s';let t='';for(let j=0;j<20;j++)t+=(Math.random()>.5?'1':'0')+'\n';d.textContent=t;r.appendChild(d)}}
+
+function volumeScale(v,maxV){if(!Number.isFinite(v)||!Number.isFinite(maxV)||maxV<=0)return 46;return 42+Math.sqrt(v/maxV)*18}
+
+function layout(){
+  const o=el('orbit');o.querySelectorAll('.node').forEach(x=>x.remove());
+  const maxV=Math.max(1,...stocks.map(s=>Number.isFinite(s.v)?s.v:0));
+  stocks.forEach((s,i)=>{
+    const a=(Math.PI*2*i/stocks.length)-Math.PI/2;
+    const rad=(i%2?42:31);
+    const x=50+Math.cos(a)*rad,y=50+Math.sin(a)*rad;
+    const n=document.createElement('button');
+    n.className='node '+dirClass(s.c);
+    const sz=volumeScale(s.v,maxV);
+    n.style.left=x+'%';n.style.top=y+'%';n.style.width=sz+'px';n.style.height=sz+'px';
+    n.textContent=s.s;
+    n.onclick=()=>openStock(s);
+    o.appendChild(n);
+  });
+}
+
+function sparkPoints(h){
+  const arr=h.filter(Number.isFinite);
+  if(arr.length<2)return'0,60 320,60';
+  const min=Math.min(...arr),max=Math.max(...arr),span=Math.max(.0001,max-min);
+  return arr.map((v,i)=>((i/(arr.length-1))*320).toFixed(1)+','+(108-((v-min)/span)*96).toFixed(1)).join(' ');
+}
+
+function openStock(s){
+  current=s;el('ds').textContent=s.s;el('dp').textContent=fmt(s.p);
+  el('dc').textContent=pct(s.c);el('dc').className='pct '+dirClass(s.c);
+  el('dv').textContent=vol(s.v);el('dh').textContent=fmt(s.hi);el('dl').textContent=fmt(s.lo);el('dprev').textContent=fmt(s.prev);
+  el('dstate').textContent=s.state||'—';el('dtime').textContent=s.mt?new Date(s.mt*1000).toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'}):'—';
+  el('line').setAttribute('points',sparkPoints(s.h));el('line').setAttribute('stroke',s.c<0?'#ff6868':'#63ff96');
+  el('favbtn').textContent=fav.has(s.s)?'★ FAVORİDEN ÇIKAR':'☆ BENİM EVRENİME EKLE';el('sheet').classList.add('show');
+}
+
+function rows(list,target){
+  target.innerHTML='';
+  list.forEach(s=>{
+    const d=document.createElement('div');d.className='row';
+    d.innerHTML='<div><div class="sym">'+s.s+'</div><div class="price">'+fmt(s.p)+' TL • Hacim '+vol(s.v)+'</div></div><div><div class="pct '+dirClass(s.c)+'">'+pct(s.c)+'</div><div class="meta">'+(s.mt?new Date(s.mt*1000).toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'}):'')+'</div></div>';
+    d.onclick=()=>openStock(s);target.appendChild(d);
+  });
+  if(!list.length)target.innerHTML='<div class="empty">Henüz veri/favori yok.</div>';
+}
+
+function renderPulse(){
+  const valid=stocks.filter(s=>Number.isFinite(s.c));
+  const greens=valid.filter(s=>s.c>0.005).length,reds=valid.filter(s=>s.c<-.005).length;
+  el('greenCount').textContent=greens;el('redCount').textContent=reds;
+  const avg=valid.length?valid.reduce((a,s)=>a+s.c,0)/valid.length:null;
+  el('avgChange').textContent=avg===null?'—':pct(avg);el('avgChange').className=dirClass(avg);
+  const mover=[...valid].sort((a,b)=>Math.abs(b.c)-Math.abs(a.c))[0];el('topMover').textContent=mover?mover.s:'—';
+}
+
+function renderAll(){
+  layout();renderPulse();
+  rows([...stocks].filter(s=>Number.isFinite(s.p)).sort((a,b)=>Math.abs(b.c||0)-Math.abs(a.c||0)),el('tape'));
+  if(el('v2').classList.contains('active'))rows(stocks.filter(s=>fav.has(s.s)&&Number.isFinite(s.p)),el('favs'));
+}
+
+function applyQuote(q){
+  if(q.symbol==='XU030'){
+    el('idx').textContent=fmt(q.price,2);el('idxChg').textContent=pct(q.changePercent);el('idxChg').className='chg '+dirClass(q.changePercent);
+    el('coreState').textContent=q.marketState||'VERİ';
+    return;
+  }
+  const s=bySymbol[q.symbol];if(!s)return;
+  s.p=Number.isFinite(q.price)?q.price:s.p;s.c=Number.isFinite(q.changePercent)?q.changePercent:s.c;s.v=Number.isFinite(q.volume)?q.volume:s.v;
+  s.hi=Number.isFinite(q.dayHigh)?q.dayHigh:s.hi;s.lo=Number.isFinite(q.dayLow)?q.dayLow:s.lo;s.prev=Number.isFinite(q.previousClose)?q.previousClose:s.prev;
+  s.state=q.marketState||s.state;s.mt=q.marketTime||s.mt;
+  if(Number.isFinite(s.p)){s.h.push(s.p);if(s.h.length>36)s.h.shift();}
+}
+
+window.onMarketData=function(payload){
+  try{
+    const quotes=payload.quotes||[];quotes.forEach(applyQuote);
+    const now=new Date(payload.fetchedAt||Date.now());
+    el('statusLine').textContent='Son bağlantı '+now.toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});
+    el('statusLine').classList.remove('error');el('sourceBadge').textContent='YAHOO • GECİKMELİ OLABİLİR';
+    renderAll();
+    const saved={at:payload.fetchedAt,quotes};localStorage.setItem('mxLastGood',JSON.stringify(saved));lastGood=saved;
+  }catch(e){window.onMarketError({message:'Veri işlenemedi'});}
+};
+
+window.onMarketError=function(err){
+  el('statusLine').textContent='Bağlantı sorunu • son veri korunuyor';el('statusLine').classList.add('error');
+  if(lastGood&&lastGood.quotes){lastGood.quotes.forEach(applyQuote);renderAll();}
+};
+
+el('refreshBtn').onclick=()=>{el('statusLine').textContent='Yenileniyor…';try{AndroidMarket.refresh()}catch(e){window.onMarketError({message:'Köprü yok'})}};
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');el('v'+b.dataset.t).classList.add('active');
+  if(b.dataset.t==='1')rows([...stocks].filter(s=>Number.isFinite(s.p)).sort((a,b)=>Math.abs(b.c||0)-Math.abs(a.c||0)),el('tape'));
+  if(b.dataset.t==='2')rows(stocks.filter(s=>fav.has(s.s)&&Number.isFinite(s.p)),el('favs'));
+});
+el('close').onclick=()=>el('sheet').classList.remove('show');el('sheet').onclick=e=>{if(e.target===el('sheet'))el('sheet').classList.remove('show')};
+el('favbtn').onclick=()=>{if(!current)return;fav.has(current.s)?fav.delete(current.s):fav.add(current.s);localStorage.setItem('mxFav',JSON.stringify([...fav]));el('favbtn').textContent=fav.has(current.s)?'★ FAVORİDEN ÇIKAR':'☆ BENİM EVRENİME EKLE'};
+
+rain();layout();
+if(lastGood&&lastGood.quotes){lastGood.quotes.forEach(applyQuote);renderAll();el('statusLine').textContent='Son kayıt gösteriliyor • bağlanıyor…'}
+</script>
+</body>
+</html>
