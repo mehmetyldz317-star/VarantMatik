@@ -4,21 +4,19 @@ plugins {
 
 android {
     namespace = "com.matrixevreni.app"
-    compileSdk = 37
+    compileSdk = 36
     buildToolsVersion = "36.0.0"
 
     defaultConfig {
         applicationId = "com.matrixevreni.app"
         minSdk = 24
-        targetSdk = 37
-        versionCode = 12
-        versionName = "1.2.0-clean"
+        targetSdk = 35
+        versionCode = 13
+        versionName = "1.2.1-clean"
     }
 
     buildTypes {
-        release {
-            isMinifyEnabled = false
-        }
+        release { isMinifyEnabled = false }
     }
 
     compileOptions {
