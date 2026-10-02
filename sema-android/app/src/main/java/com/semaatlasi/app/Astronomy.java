@@ -29,10 +29,37 @@ public final class Astronomy {
                 + 0.000387933 * t * t - t * t * t / 38710000.0);
     }
 
+    private static double[] precessJ2000(double raHours, double decDeg, long timeMs) {
+        double jd = julianDate(timeMs);
+        double t = (jd - 2451545.0) / 36525.0;
+
+        double zeta = rad((2306.2181*t + 0.30188*t*t + 0.017998*t*t*t) / 3600.0);
+        double z = rad((2306.2181*t + 1.09468*t*t + 0.018203*t*t*t) / 3600.0);
+        double theta = rad((2004.3109*t - 0.42665*t*t - 0.041833*t*t*t) / 3600.0);
+
+        double a0 = rad(raHours * 15.0);
+        double d0 = rad(decDeg);
+        double A = Math.cos(d0) * Math.sin(a0 + zeta);
+        double B = Math.cos(theta) * Math.cos(d0) * Math.cos(a0 + zeta) - Math.sin(theta) * Math.sin(d0);
+        double C = Math.sin(theta) * Math.cos(d0) * Math.cos(a0 + zeta) + Math.cos(theta) * Math.sin(d0);
+
+        double a = Math.atan2(A, B) + z;
+        double d = Math.asin(clamp(C, -1, 1));
+        return new double[]{norm360(deg(a)) / 15.0, deg(d)};
+    }
+
+    private static double refractedAltitude(double geometricAltDeg) {
+        if (geometricAltDeg < -1.0 || geometricAltDeg > 89.5) return geometricAltDeg;
+        double x = geometricAltDeg + 10.3 / (geometricAltDeg + 5.11);
+        double rArcMin = 1.02 / Math.tan(rad(x));
+        return geometricAltDeg + rArcMin / 60.0;
+    }
+
     public static AltAz altAz(SkyObject o, double lat, double lon, long timeMs) {
+        double[] eq = precessJ2000(o.ra, o.dec, timeMs);
         double lst = norm360(gmst(timeMs) + lon);
-        double h = rad(norm180(lst - o.ra * 15.0));
-        double dec = rad(o.dec);
+        double h = rad(norm180(lst - eq[0] * 15.0));
+        double dec = rad(eq[1]);
         double phi = rad(lat);
         double sinAlt = Math.sin(phi) * Math.sin(dec)
                 + Math.cos(phi) * Math.cos(dec) * Math.cos(h);
@@ -40,7 +67,8 @@ public final class Astronomy {
         double y = -Math.sin(h) * Math.cos(dec);
         double x = Math.sin(dec) * Math.cos(phi)
                 - Math.cos(dec) * Math.sin(phi) * Math.cos(h);
-        return new AltAz(deg(alt), norm360(deg(Math.atan2(y, x))));
+        double geometricAlt = deg(alt);
+        return new AltAz(refractedAltitude(geometricAlt), norm360(deg(Math.atan2(y, x))));
     }
 
     public static void updateAltAz(List<SkyObject> objects, double lat, double lon, long timeMs) {
