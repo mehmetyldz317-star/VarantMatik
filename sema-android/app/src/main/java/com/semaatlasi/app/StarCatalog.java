@@ -32,13 +32,19 @@ public final class StarCatalog {
                 String[] p = line.split("\t", -1);
                 if (p.length < 8) continue;
                 try {
+                    double x=p.length>8 && !p[8].isEmpty()?Double.parseDouble(p[8]):Double.NaN;
+                    double y=p.length>9 && !p[9].isEmpty()?Double.parseDouble(p[9]):Double.NaN;
+                    double z=p.length>10 && !p[10].isEmpty()?Double.parseDouble(p[10]):Double.NaN;
+                    double vx=p.length>11 && !p[11].isEmpty()?Double.parseDouble(p[11]):Double.NaN;
+                    double vy=p.length>12 && !p[12].isEmpty()?Double.parseDouble(p[12]):Double.NaN;
+                    double vz=p.length>13 && !p[13].isEmpty()?Double.parseDouble(p[13]):Double.NaN;
                     list.add(new SkyObject(
                             p[0], p[1], p[2], p[3],
                             Double.parseDouble(p[4]),
                             Double.parseDouble(p[5]),
                             Double.parseDouble(p[6]),
                             p[7].isEmpty() ? Double.NaN : Double.parseDouble(p[7]),
-                            "star"
+                            "star",x,y,z,vx,vy,vz
                     ));
                 } catch (NumberFormatException ignored) {}
             }
