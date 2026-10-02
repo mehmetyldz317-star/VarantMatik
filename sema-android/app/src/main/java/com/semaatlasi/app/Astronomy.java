@@ -55,8 +55,22 @@ public final class Astronomy {
         return geometricAltDeg + rArcMin / 60.0;
     }
 
+    private static double[] currentJ2000(SkyObject o, long timeMs) {
+        if (o != null && o.hasSpaceMotion()) {
+            double years = (julianDate(timeMs) - 2451545.0) / 365.25;
+            double x = o.xPc + o.vxPcYr * years;
+            double y = o.yPc + o.vyPcYr * years;
+            double z = o.zPc + o.vzPcYr * years;
+            double ra = norm360(deg(Math.atan2(y, x))) / 15.0;
+            double dec = deg(Math.atan2(z, Math.hypot(x, y)));
+            return new double[]{ra, dec};
+        }
+        return new double[]{o.ra, o.dec};
+    }
+
     public static AltAz altAz(SkyObject o, double lat, double lon, long timeMs) {
-        double[] eq = precessJ2000(o.ra, o.dec, timeMs);
+        double[] moving = currentJ2000(o, timeMs);
+        double[] eq = precessJ2000(moving[0], moving[1], timeMs);
         double lst = norm360(gmst(timeMs) + lon);
         double h = rad(norm180(lst - eq[0] * 15.0));
         double dec = rad(eq[1]);
