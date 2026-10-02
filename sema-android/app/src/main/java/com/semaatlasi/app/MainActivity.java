@@ -224,7 +224,7 @@ public class MainActivity extends Activity implements SensorEventListener, SkyVi
 
         objectMetrics=text("Parlaklık • Uzaklık • Yön • Yükseklik",11,0xFFE5EDFF,false);
         objectMetrics.setPadding(dp(10),dp(9),dp(10),dp(9));
-        objectMetrics.setBackground(glass(0x121FFFFFF,13,0x10FFFFFF));
+        objectMetrics.setBackground(glass(0x12FFFFFF,13,0x10FFFFFF));
         LinearLayout.LayoutParams mp=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);mp.topMargin=dp(9);
         objectCard.addView(objectMetrics,mp);
 
