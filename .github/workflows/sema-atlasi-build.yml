@@ -82,11 +82,18 @@ jobs:
                       except Exception:
                           pass
                       sid = ("h" + hip) if hip else ("hyg" + (hyg_id or str(idx)))
-                      rows.append((sid, name, "", con, f"{ra:.7f}", f"{dec:.7f}", f"{mag:.3f}", dist_ly))
+                      def num(field):
+                          try:
+                              v = float(row.get(field) or "nan")
+                              return f"{v:.12g}" if v == v else ""
+                          except Exception:
+                              return ""
+                      rows.append((sid, name, "", con, f"{ra:.7f}", f"{dec:.7f}", f"{mag:.3f}", dist_ly,
+                                   num("x"), num("y"), num("z"), num("vx"), num("vy"), num("vz")))
 
               rows.sort(key=lambda r: float(r[6]))
               with open(out_path, "w", encoding="utf-8", newline="") as f:
-                  f.write("# id\tname\ttr\tcon\tra_hours\tdec_deg\tmag\tdistance_ly\n")
+                  f.write("# id\tname\ttr\tcon\tra_hours\tdec_deg\tmag\tdistance_ly\tx_pc\ty_pc\tz_pc\tvx_pcyr\tvy_pcyr\tvz_pcyr\n")
                   for r in rows:
                       f.write("\t".join(r) + "\n")
               print("HYG catalog stars:", len(rows))
@@ -105,13 +112,13 @@ jobs:
         working-directory: sema-android
         run: |
           mkdir -p build-artifact
-          cp app/build/outputs/apk/debug/app-debug.apk build-artifact/SemaAtlasi-v1.0.apk
+          cp app/build/outputs/apk/debug/app-debug.apk build-artifact/SemaAtlasi-v1.1.apk
           sha256sum build-artifact/SemaAtlasi-v1.0.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: SemaAtlasi-v1.0-APK
-          path: sema-android/build-artifact/SemaAtlasi-v1.0.apk
+          name: SemaAtlasi-v1.1-APK
+          path: sema-android/build-artifact/SemaAtlasi-v1.1.apk
           if-no-files-found: error
           retention-days: 7
