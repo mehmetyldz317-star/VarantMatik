@@ -73,6 +73,8 @@ jobs:
                       hip = clean(row.get("hip"))
                       hyg_id = clean(row.get("id"))
                       name = proper or bf or (("HIP " + hip) if hip else ("HYG " + (hyg_id or str(idx))))
+                      if name.strip().lower() == "sol":
+                          continue
                       con = clean(row.get("con"))
                       dist_ly = ""
                       try:
