@@ -51,7 +51,7 @@ public class MainActivity extends Activity implements SensorEventListener, SkyVi
     private TextView statusText, sensorButton, dirHud, altHud, modeHud;
     private LinearLayout objectCard;
     private TextView objectName, objectSub, objectMetrics, objectVisibility;
-    private TextView trackButton, saveButton;
+    private TextView trackButton, saveButton, identifyButton;
 
     private SensorManager sensorManager;
     private Sensor rotationSensor;
@@ -59,6 +59,9 @@ public class MainActivity extends Activity implements SensorEventListener, SkyVi
     private float magneticDeclination=0f;
     private double smoothHeading=Double.NaN;
     private double smoothAlt=Double.NaN;
+    private int sensorAccuracy=SensorManager.SENSOR_STATUS_UNRELIABLE;
+    private PointingSolver pointingSolver;
+    private boolean hasLocation=false;
 
     private LocationManager locationManager;
     private final LocationListener locationListener=new LocationListener() {
@@ -79,6 +82,9 @@ public class MainActivity extends Activity implements SensorEventListener, SkyVi
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         prefs=getSharedPreferences("sema_prefs",MODE_PRIVATE);
+        pointingSolver=new PointingSolver(
+                prefs.getFloat("point_yaw",0f),
+                prefs.getFloat("point_alt",0f));
         sensorManager=(SensorManager)getSystemService(Context.SENSOR_SERVICE);
         rotationSensor=sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
         locationManager=(LocationManager)getSystemService(Context.LOCATION_SERVICE);
@@ -95,22 +101,36 @@ public class MainActivity extends Activity implements SensorEventListener, SkyVi
         skyView.setListener(this);
         root.addView(skyView,new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,FrameLayout.LayoutParams.MATCH_PARENT));
 
-        cameraController=new CameraController(this,cameraView,(on,msg)->runOnUiThread(()->{
-            cameraView.setVisibility(on?View.VISIBLE:View.INVISIBLE);
-            skyView.setArMode(on);
-            modeHud.setText(on?"AR KAMERA":"GÖKYÜZÜ");
-            if (!on && "Gökyüzü modu".equals(msg)) modeHud.setText("GÖKYÜZÜ");
-            toast(msg);
-        }));
+        cameraController=new CameraController(this,cameraView,new CameraController.Callback() {
+            @Override public void onCameraState(boolean on,String msg) {
+                runOnUiThread(()->{
+                    cameraView.setVisibility(on?View.VISIBLE:View.INVISIBLE);
+                    skyView.setArMode(on);
+                    modeHud.setText(on?"AR KAMERA":"GÖKYÜZÜ");
+                    if (!on && "Gökyüzü modu".equals(msg)) modeHud.setText("GÖKYÜZÜ");
+                    toast(msg);
+                });
+            }
+
+            @Override public void onCameraFov(double horizontalDeg,double verticalDeg) {
+                runOnUiThread(()->skyView.setCameraFov(horizontalDeg,verticalDeg));
+            }
+        });
 
         buildTopBar();
         buildHud();
         buildSideControls();
         buildBottomNav();
+        buildIdentifyButton();
         buildObjectCard();
 
         restoreLocation();
-        statusText.setText(String.format(Locale.getDefault(),"%d yıldız • dokunarak tanı",skyView.getCatalogSize()));
+        if (hasLocation) {
+            statusText.setText(String.format(Locale.getDefault(),"%d yıldız • konum hazır",skyView.getCatalogSize()));
+        } else {
+            statusText.setText("Konum gerekli • harita henüz doğrulanmadı");
+            root.postDelayed(this::showFirstAccuracySetup,500);
+        }
     }
 
     private void buildTopBar() {
@@ -203,6 +223,17 @@ public class MainActivity extends Activity implements SensorEventListener, SkyVi
         root.addView(nav,lp);
     }
 
+    private void buildIdentifyButton() {
+        identifyButton=button("◎  YILDIZI TANI",12);
+        identifyButton.setBackground(glass(0xE6C7EFFF,22,0x00FFFFFF));
+        identifyButton.setTextColor(0xFF07101E);
+        identifyButton.setOnClickListener(v->identifyStar());
+
+        FrameLayout.LayoutParams lp=new FrameLayout.LayoutParams(dp(176),dp(48),Gravity.BOTTOM|Gravity.CENTER_HORIZONTAL);
+        lp.bottomMargin=dp(82);
+        root.addView(identifyButton,lp);
+    }
+
     private void buildObjectCard() {
         objectCard=new LinearLayout(this);
         objectCard.setOrientation(LinearLayout.VERTICAL);
@@ -243,9 +274,14 @@ public class MainActivity extends Activity implements SensorEventListener, SkyVi
         LinearLayout.LayoutParams ap=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,dp(42));ap.topMargin=dp(8);
         objectCard.addView(actions,ap);
 
+        TextView calibrate=button("◎  Nişangâh Bu Yıldızdaysa Hizalamayı Kalibre Et",10);
+        LinearLayout.LayoutParams cp=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,dp(42));cp.topMargin=dp(7);
+        objectCard.addView(calibrate,cp);
+
         trackButton.setOnClickListener(v->{skyView.setTracking(!skyView.isTracking());trackButton.setText(skyView.isTracking()?"Takip Açık":"Gökyüzünde Bul");});
         center.setOnClickListener(v->{skyView.centerOn(skyView.getSelected());sensorEnabled=false;unregisterSensor();sensorButton.setText("📡  SENSÖR");toast("Yıldız ortalandı • manuel mod");});
         saveButton.setOnClickListener(v->toggleFavorite());
+        calibrate.setOnClickListener(v->calibrateToSelected());
 
         FrameLayout.LayoutParams lp=new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,FrameLayout.LayoutParams.WRAP_CONTENT,Gravity.BOTTOM);
         lp.setMargins(dp(10),0,dp(10),dp(82));
@@ -275,28 +311,19 @@ public class MainActivity extends Activity implements SensorEventListener, SkyVi
 
     @Override public void onSensorChanged(SensorEvent event) {
         if (!sensorEnabled || event.sensor.getType()!=Sensor.TYPE_ROTATION_VECTOR) return;
-        float[] r=new float[9],remap=new float[9],ori=new float[3];
+        float[] r=new float[9];
         SensorManager.getRotationMatrixFromVector(r,event.values);
-        boolean ok=SensorManager.remapCoordinateSystem(r,SensorManager.AXIS_X,SensorManager.AXIS_Z,remap);
-        if (!ok) return;
-        SensorManager.getOrientation(remap,ori);
-        double rawHeading=Math.toDegrees(ori[0]);
-        if (rawHeading<0) rawHeading+=360;
-        rawHeading=Astronomy.norm360(rawHeading+magneticDeclination);
-        double rawAlt=Math.max(-15,Math.min(90,-Math.toDegrees(ori[1])));
-
-        if (Double.isNaN(smoothHeading)) smoothHeading=rawHeading;
-        else {
-            double delta=Astronomy.norm180(rawHeading-smoothHeading);
-            smoothHeading=Astronomy.norm360(smoothHeading+delta*.18);
-        }
-        if (Double.isNaN(smoothAlt)) smoothAlt=rawAlt;
-        else smoothAlt=smoothAlt+(rawAlt-smoothAlt)*.18;
-
-        skyView.setViewDirection(smoothHeading,smoothAlt);
+        PointingSolver.Pose pose=pointingSolver.solve(r,magneticDeclination);
+        skyView.setSensorPose(pose.heading,pose.altitude,pose.right,pose.up,pose.forward);
     }
 
-    @Override public void onAccuracyChanged(Sensor sensor,int accuracy) {}
+    @Override public void onAccuracyChanged(Sensor sensor,int accuracy) {
+        if (sensor.getType()!=Sensor.TYPE_ROTATION_VECTOR) return;
+        sensorAccuracy=accuracy;
+        if (sensorEnabled && accuracy==SensorManager.SENSOR_STATUS_UNRELIABLE) {
+            runOnUiThread(()->statusText.setText("Pusula doğruluğu düşük • telefonu 8 çizerek kalibre et"));
+        }
+    }
 
     private void requestLocation() {
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION)!=PackageManager.PERMISSION_GRANTED
@@ -329,18 +356,20 @@ public class MainActivity extends Activity implements SensorEventListener, SkyVi
         GeomagneticField field=new GeomagneticField((float)location.getLatitude(),(float)location.getLongitude(),(float)location.getAltitude(),System.currentTimeMillis());
         magneticDeclination=field.getDeclination();
         prefs.edit().putString("lat",Double.toString(location.getLatitude())).putString("lon",Double.toString(location.getLongitude())).apply();
-        statusText.setText(String.format(Locale.getDefault(),"Konum güncel • %.3f, %.3f",location.getLatitude(),location.getLongitude()));
+        hasLocation=true;
+        statusText.setText(String.format(Locale.getDefault(),"Konum güncel • ±%.0f m",Math.max(1f,location.getAccuracy())));
         toast("Gerçek konum kullanılıyor");
     }
 
     private void restoreLocation() {
         try {
             if (prefs.contains("lat")&&prefs.contains("lon")) {
-                double lat=Double.parseDouble(prefs.getString("lat","37.9144"));
-                double lon=Double.parseDouble(prefs.getString("lon","40.2306"));
+                double lat=Double.parseDouble(prefs.getString("lat","0"));
+                double lon=Double.parseDouble(prefs.getString("lon","0"));
                 skyView.setLocation(lat,lon);
                 GeomagneticField f=new GeomagneticField((float)lat,(float)lon,0,System.currentTimeMillis());
                 magneticDeclination=f.getDeclination();
+                hasLocation=true;
             }
         } catch (Exception ignored) {}
     }
@@ -461,6 +490,7 @@ public class MainActivity extends Activity implements SensorEventListener, SkyVi
 
     private void showObjectCard(SkyObject o) {
         objectCard.setVisibility(View.VISIBLE);
+        if (identifyButton!=null) identifyButton.setVisibility(View.GONE);
         objectName.setText(o.displayName());
         objectSub.setText(o.isStar()?skyView.constellationName(o.con)+" Takımyıldızı":o.con);
         String mag=String.format(Locale.getDefault(),"%.2f kadir",o.mag);
@@ -487,7 +517,10 @@ public class MainActivity extends Activity implements SensorEventListener, SkyVi
         saveButton.setText(favoriteNames().contains(o.name)?"★ Kayıtlı":"☆ Kaydet");
     }
 
-    private void hideObjectCard(){ objectCard.setVisibility(View.GONE); }
+    private void hideObjectCard(){
+        objectCard.setVisibility(View.GONE);
+        if (identifyButton!=null) identifyButton.setVisibility(View.VISIBLE);
+    }
 
     @Override public void onObjectSelected(SkyObject object) { runOnUiThread(()->showObjectCard(object)); }
 
