@@ -10,6 +10,8 @@ public class SkyObject {
     public final double mag;
     public final double dist;
     public final String type;
+    public final double xPc, yPc, zPc;
+    public final double vxPcYr, vyPcYr, vzPcYr;
 
     public volatile double alt;
     public volatile double az;
@@ -19,6 +21,14 @@ public class SkyObject {
 
     public SkyObject(String id, String name, String tr, String con,
                      double ra, double dec, double mag, double dist, String type) {
+        this(id,name,tr,con,ra,dec,mag,dist,type,
+                Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN);
+    }
+
+    public SkyObject(String id, String name, String tr, String con,
+                     double ra, double dec, double mag, double dist, String type,
+                     double xPc, double yPc, double zPc,
+                     double vxPcYr, double vyPcYr, double vzPcYr) {
         this.id = id;
         this.name = name;
         this.tr = tr == null ? "" : tr;
@@ -28,6 +38,13 @@ public class SkyObject {
         this.mag = mag;
         this.dist = dist;
         this.type = type == null ? "star" : type;
+        this.xPc=xPc; this.yPc=yPc; this.zPc=zPc;
+        this.vxPcYr=vxPcYr; this.vyPcYr=vyPcYr; this.vzPcYr=vzPcYr;
+    }
+
+    public boolean hasSpaceMotion() {
+        return Double.isFinite(xPc) && Double.isFinite(yPc) && Double.isFinite(zPc)
+                && Double.isFinite(vxPcYr) && Double.isFinite(vyPcYr) && Double.isFinite(vzPcYr);
     }
 
     public String displayName() {
