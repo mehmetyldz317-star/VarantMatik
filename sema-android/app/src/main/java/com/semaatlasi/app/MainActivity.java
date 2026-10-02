@@ -374,7 +374,106 @@ public class MainActivity extends Activity implements SensorEventListener, SkyVi
         } catch (Exception ignored) {}
     }
 
+    private void identifyStar() {
+        if (!hasLocation) {
+            showFirstAccuracySetup();
+            return;
+        }
+        if (!sensorEnabled) {
+            toggleSensor();
+            toast("Sensör açıldı • yıldızı nişangâha getirip tekrar TANILA'ya bas");
+            return;
+        }
+        SkyObject found=skyView.identifyAtCenter(6.0);
+        if (found==null) {
+            toast("Nişangâhın 6° çevresinde belirgin yıldız bulunamadı");
+            return;
+        }
+        showObjectCard(found);
+        if (sensorAccuracy==SensorManager.SENSOR_STATUS_UNRELIABLE) {
+            toast("Aday bulundu; pusula doğruluğu düşük olduğu için hizalamayı kontrol et");
+        }
+    }
+
+    private void calibrateToSelected() {
+        SkyObject o=skyView.getSelected();
+        if (o==null) return;
+        if (!hasLocation) {
+            showFirstAccuracySetup();
+            return;
+        }
+        if (!sensorEnabled) {
+            toast("Önce sensörü aç ve gerçek yıldızı nişangâha getir");
+            return;
+        }
+        if (o.alt<0) {
+            toast("Ufkun altındaki bir cisimle kalibrasyon yapılamaz");
+            return;
+        }
+        new AlertDialog.Builder(this)
+                .setTitle("Yıldızla hassas kalibrasyon")
+                .setMessage("Nişangâh gerçekten "+o.name+" yıldızının tam üstündeyse “Hizala”ya bas. Bu işlem yatay ve dikey sensör sapmasını düzeltir.")
+                .setNegativeButton("Vazgeç",null)
+                .setPositiveButton("Hizala",(d,w)->{
+                    pointingSolver.calibrateTo(o.az,o.alt,skyView.getEffectiveHeading(),skyView.getAltitude());
+                    prefs.edit()
+                            .putFloat("point_yaw",(float)pointingSolver.getYawOffsetDeg())
+                            .putFloat("point_alt",(float)pointingSolver.getAltitudeOffsetDeg())
+                            .apply();
+                    toast(String.format(Locale.getDefault(),"Kalibrasyon kaydedildi • yatay %.1f° / dikey %.1f°",
+                            pointingSolver.getYawOffsetDeg(),pointingSolver.getAltitudeOffsetDeg()));
+                }).show();
+    }
+
+    private void showFirstAccuracySetup() {
+        new AlertDialog.Builder(this)
+                .setTitle("Doğru gökyüzü için konum")
+                .setMessage("Yıldızların yönü bulunduğun yere göre değişir. Konum doğrulanmadan uygulama yıldız tanıma sonucunu kesin kabul etmez.")
+                .setPositiveButton("Konumumu Kullan",(d,w)->requestLocation())
+                .setNeutralButton("Koordinat Gir",(d,w)->showManualLocationDialog())
+                .setNegativeButton("Şimdilik Sonra",null)
+                .show();
+    }
+
+    private void showManualLocationDialog() {
+        LinearLayout box=new LinearLayout(this);
+        box.setOrientation(LinearLayout.VERTICAL);
+        box.setPadding(dp(18),dp(4),dp(18),0);
+        EditText latInput=new EditText(this);
+        EditText lonInput=new EditText(this);
+        latInput.setHint("Enlem, örn. 37.9144");
+        lonInput.setHint("Boylam, örn. 40.2306");
+        latInput.setInputType(android.text.InputType.TYPE_CLASS_NUMBER|android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL|android.text.InputType.TYPE_NUMBER_FLAG_SIGNED);
+        lonInput.setInputType(android.text.InputType.TYPE_CLASS_NUMBER|android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL|android.text.InputType.TYPE_NUMBER_FLAG_SIGNED);
+        box.addView(latInput);
+        box.addView(lonInput);
+        new AlertDialog.Builder(this)
+                .setTitle("Koordinatı elle gir")
+                .setView(box)
+                .setNegativeButton("Vazgeç",null)
+                .setPositiveButton("Kaydet",(d,w)->{
+                    try {
+                        double lat=Double.parseDouble(latInput.getText().toString().replace(',','.'));
+                        double lon=Double.parseDouble(lonInput.getText().toString().replace(',','.'));
+                        if (lat<-90||lat>90||lon<-180||lon>180) throw new IllegalArgumentException();
+                        skyView.setLocation(lat,lon);
+                        GeomagneticField field=new GeomagneticField((float)lat,(float)lon,0,System.currentTimeMillis());
+                        magneticDeclination=field.getDeclination();
+                        prefs.edit().putString("lat",Double.toString(lat)).putString("lon",Double.toString(lon)).apply();
+                        hasLocation=true;
+                        statusText.setText("Manuel konum hazır • yıldız haritası etkin");
+                        toast("Koordinat kaydedildi");
+                    } catch (Exception e) {
+                        toast("Koordinat geçersiz");
+                    }
+                }).show();
+    }
+
     private void toggleAr() {
+        if (!hasLocation && !skyView.isArMode()) {
+            showFirstAccuracySetup();
+            return;
+        }
         if (cameraController.isRunning() || skyView.isArMode()) {
             cameraController.stop();
             cameraView.setVisibility(View.INVISIBLE);
@@ -410,6 +509,7 @@ public class MainActivity extends Activity implements SensorEventListener, SkyVi
     }
 
     private void showTonight() {
+        if (!hasLocation) { showFirstAccuracySetup(); return; }
         List<SkyObject> list=skyView.getTonightObjects();
         if (list.isEmpty()) { toast("Şu anda belirgin cisim bulunamadı"); return; }
         int n=Math.min(14,list.size());
@@ -457,12 +557,23 @@ public class MainActivity extends Activity implements SensorEventListener, SkyVi
         box.addView(desc);
 
         LinearLayout cal=new LinearLayout(this);
-        TextView minus=button("− 5°",11),reset=button("Sıfırla",11),plus=button("+ 5°",11);
+        TextView minus=button("Yatay −1°",10),reset=button("Sıfırla",10),plus=button("Yatay +1°",10);
         cal.addView(minus,new LinearLayout.LayoutParams(0,dp(42),1));cal.addView(reset,new LinearLayout.LayoutParams(0,dp(42),1));cal.addView(plus,new LinearLayout.LayoutParams(0,dp(42),1));
         box.addView(cal);
-        minus.setOnClickListener(v->{skyView.adjustHeadingOffset(-5);toast("Ofset "+Math.round(skyView.getHeadingOffset())+"°");});
-        plus.setOnClickListener(v->{skyView.adjustHeadingOffset(5);toast("Ofset "+Math.round(skyView.getHeadingOffset())+"°");});
-        reset.setOnClickListener(v->{skyView.resetHeadingOffset();toast("Kalibrasyon sıfırlandı");});
+        minus.setOnClickListener(v->{pointingSolver.setOffsets(pointingSolver.getYawOffsetDeg()-1,pointingSolver.getAltitudeOffsetDeg());savePointingCalibration();toast(calibrationText());});
+        plus.setOnClickListener(v->{pointingSolver.setOffsets(pointingSolver.getYawOffsetDeg()+1,pointingSolver.getAltitudeOffsetDeg());savePointingCalibration();toast(calibrationText());});
+        reset.setOnClickListener(v->{pointingSolver.reset();savePointingCalibration();toast("Sensör hizalaması sıfırlandı");});
+
+        LinearLayout vertical=new LinearLayout(this);
+        TextView down=button("Dikey −1°",10),starCal=button("Yıldızla Hizala",10),up=button("Dikey +1°",10);
+        vertical.addView(down,new LinearLayout.LayoutParams(0,dp(42),1));
+        vertical.addView(starCal,new LinearLayout.LayoutParams(0,dp(42),1.2f));
+        vertical.addView(up,new LinearLayout.LayoutParams(0,dp(42),1));
+        LinearLayout.LayoutParams vcp=new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,dp(42));vcp.topMargin=dp(6);
+        box.addView(vertical,vcp);
+        down.setOnClickListener(v->{pointingSolver.setOffsets(pointingSolver.getYawOffsetDeg(),pointingSolver.getAltitudeOffsetDeg()-1);savePointingCalibration();toast(calibrationText());});
+        up.setOnClickListener(v->{pointingSolver.setOffsets(pointingSolver.getYawOffsetDeg(),pointingSolver.getAltitudeOffsetDeg()+1);savePointingCalibration();toast(calibrationText());});
+        starCal.setOnClickListener(v->calibrateToSelected());
 
         TextView c1=settingButton("Takımyıldız çizgileri",skyView.isShowingConstellations());
         TextView c2=settingButton("Takımyıldız adları",skyView.isShowingConstellationNames());
@@ -474,11 +585,29 @@ public class MainActivity extends Activity implements SensorEventListener, SkyVi
         c3.setOnClickListener(v->{boolean x=skyView.togglePlanets();c3.setText(settingText("Gezegenler ve Ay",x));});
         c4.setOnClickListener(v->{boolean x=skyView.toggleCityFilter();c4.setText(settingText("Şehir ışığı filtresi",x));});
 
-        TextView cat=text("Katalog: "+skyView.getCatalogSize()+" yıldız\nKonum: "+String.format(Locale.getDefault(),"%.4f, %.4f",skyView.getLat(),skyView.getLon())+"\nHYG Database • 6. kadire kadar çıplak göz kataloğu",10,0xFF98A5BF,false);
+        TextView locationButton=settingButton("Konumumu Yenile",hasLocation);
+        TextView manualButton=settingButton("Koordinatı Elle Gir",hasLocation);
+        box.addView(locationButton);box.addView(manualButton);
+        locationButton.setOnClickListener(v->requestLocation());
+        manualButton.setOnClickListener(v->showManualLocationDialog());
+
+        TextView cat=text("Katalog: "+skyView.getCatalogSize()+" yıldız\nKonum: "+(hasLocation?String.format(Locale.getDefault(),"%.4f, %.4f",skyView.getLat(),skyView.getLon()):"doğrulanmadı")+"\nKalibrasyon: "+calibrationText()+"\nHYG Database • 6. kadire kadar çıplak göz kataloğu",10,0xFF98A5BF,false);
         cat.setPadding(0,dp(12),0,0);box.addView(cat);
 
         new AlertDialog.Builder(this).setTitle("Ayarlar ve Kalibrasyon").setView(scroll)
                 .setPositiveButton("Tamam",null).show();
+    }
+
+    private void savePointingCalibration() {
+        prefs.edit()
+                .putFloat("point_yaw",(float)pointingSolver.getYawOffsetDeg())
+                .putFloat("point_alt",(float)pointingSolver.getAltitudeOffsetDeg())
+                .apply();
+    }
+
+    private String calibrationText() {
+        return String.format(Locale.getDefault(),"yatay %.1f° / dikey %.1f°",
+                pointingSolver.getYawOffsetDeg(),pointingSolver.getAltitudeOffsetDeg());
     }
 
     private TextView settingButton(String name,boolean on) {
