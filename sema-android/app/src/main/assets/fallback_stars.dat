@@ -1,0 +1,65 @@
+# id	name	tr	con	ra_hours	dec_deg	mag	distance_ly
+core0	Sirius	Akyıldız	CMa	6.7525	-16.7161	-1.46	8.6
+core1	Canopus		Car	6.3992	-52.6957	-0.74	310
+core2	Arcturus	Arkturus	Boo	14.2610	19.1824	-0.05	36.7
+core3	Vega		Lyr	18.6156	38.7837	0.03	25
+core4	Capella	Kapella	Aur	5.2782	45.9980	0.08	42.9
+core5	Rigel		Ori	5.2423	-8.2016	0.13	860
+core6	Procyon		CMi	7.6550	5.2250	0.34	11.5
+core7	Betelgeuse		Ori	5.9195	7.4071	0.42	642
+core8	Achernar		Eri	1.6286	-57.2368	0.46	139
+core9	Hadar		Cen	14.0637	-60.3730	0.61	390
+core10	Altair		Aql	19.8464	8.8683	0.76	16.7
+core11	Acrux		Cru	12.4433	-63.0991	0.76	320
+core12	Aldebaran		Tau	4.5987	16.5093	0.85	65.3
+core13	Spica	Spika	Vir	13.4199	-11.1613	0.97	250
+core14	Antares		Sco	16.4901	-26.4320	1.06	550
+core15	Pollux	Polluks	Gem	7.7553	28.0262	1.14	33.7
+core16	Fomalhaut		PsA	22.9608	-29.6222	1.16	25.1
+core17	Deneb		Cyg	20.6905	45.2803	1.25	2615
+core18	Regulus		Leo	10.1395	11.9672	1.35	79.3
+core19	Adhara		CMa	6.9771	-28.9721	1.50	430
+core20	Castor	Kastor	Gem	7.5767	31.8883	1.58	51.5
+core21	Gacrux		Cru	12.5194	-57.1132	1.63	88.6
+core22	Bellatrix		Ori	5.4189	6.3497	1.64	250
+core23	Elnath		Tau	5.4382	28.6075	1.65	134
+core24	Alnilam		Ori	5.6036	-1.2019	1.69	2000
+core25	Alioth		UMa	12.9005	55.9598	1.76	82.6
+core26	Alnitak		Ori	5.6793	-1.9426	1.77	1260
+core27	Dubhe		UMa	11.0621	61.7508	1.79	123
+core28	Mirfak		Per	3.4054	49.8612	1.79	510
+core29	Alkaid		UMa	13.7923	49.3133	1.86	104
+core30	Menkalinan		Aur	5.9921	44.9474	1.90	81
+core31	Alhena		Gem	6.6285	16.3993	1.93	109
+core32	Polaris	Kutup Yıldızı	UMi	2.5303	89.2641	1.98	433
+core33	Hamal		Ari	2.1195	23.4624	2.00	65.8
+core34	Diphda		Cet	0.7265	-17.9866	2.02	96
+core35	Alpheratz		And	0.1398	29.0904	2.06	97
+core36	Saiph		Ori	5.7959	-9.6696	2.07	650
+core37	Kochab		UMi	14.8451	74.1555	2.08	131
+core38	Almach		And	2.0649	42.3297	2.10	350
+core39	Algol		Per	3.1361	40.9556	2.12	93
+core40	Denebola		Leo	11.8177	14.5721	2.14	36
+core41	Mizar		UMa	13.3987	54.9254	2.23	82.9
+core42	Schedar		Cas	0.6751	56.5373	2.24	228
+core43	Eltanin		Dra	17.9434	51.4889	2.24	154
+core44	Mintaka		Ori	5.5334	-0.2991	2.23	1200
+core45	Caph		Cas	0.1529	59.1498	2.27	55
+core46	Algieba		Leo	10.3329	19.8415	2.28	130
+core47	Dschubba		Sco	16.0056	-22.6217	2.32	490
+core48	Merak		UMa	11.0307	56.3824	2.37	79.7
+core49	Scheat		Peg	23.0629	28.0828	2.42	196
+core50	Enif		Peg	21.7364	9.8750	2.39	690
+core51	Phecda		UMa	11.8972	53.6948	2.44	83.2
+core52	Markab		Peg	23.0793	15.2053	2.49	133
+core53	Mirach		And	1.1622	35.6206	2.05	197
+core54	Ruchbah		Cas	1.4303	60.2353	2.68	100
+core55	Sadr		Cyg	20.3705	40.2567	2.23	1800
+core56	Albireo		Cyg	19.5120	27.9597	3.05	430
+core57	Sulafat		Lyr	18.9824	32.6896	3.25	620
+core58	Sheliak		Lyr	18.8347	33.3627	3.52	960
+core59	Tarazed		Aql	19.7709	10.6133	2.72	395
+core60	Alshain		Aql	19.9219	6.4068	3.71	44.7
+core61	Gienah		Cyg	20.7702	33.9703	2.48	73
+core62	Algenib		Peg	0.2206	15.1836	2.83	390
+core63	Matar		Peg	22.7167	30.2212	2.95	215
