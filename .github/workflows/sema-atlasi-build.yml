@@ -24,6 +24,12 @@ jobs:
           java-version: '17'
 
 
+      - name: Restore internal signing keystore
+        working-directory: sema-android
+        run: |
+          mkdir -p keystore
+          base64 -d keystore/sema-dev.p12.b64 > keystore/sema-dev.p12
+
       - name: Install Android 35
         run: |
           export ANDROID_HOME=/usr/local/lib/android/sdk
