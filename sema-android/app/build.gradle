@@ -14,9 +14,22 @@ android {
         versionName "1.1.0"
     }
 
+    signingConfigs {
+        semaInternal {
+            storeFile file('../keystore/sema-dev.p12')
+            storePassword 'SemaAtlasDev2026!'
+            keyAlias 'sema-atlasi'
+            keyPassword 'SemaAtlasDev2026!'
+        }
+    }
+
     buildTypes {
+        debug {
+            signingConfig signingConfigs.semaInternal
+        }
         release {
             minifyEnabled false
+            signingConfig signingConfigs.semaInternal
         }
     }
 
