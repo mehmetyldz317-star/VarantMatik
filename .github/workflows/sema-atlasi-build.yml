@@ -113,7 +113,7 @@ jobs:
         run: |
           mkdir -p build-artifact
           cp app/build/outputs/apk/debug/app-debug.apk build-artifact/SemaAtlasi-v1.1.apk
-          sha256sum build-artifact/SemaAtlasi-v1.0.apk
+          sha256sum build-artifact/SemaAtlasi-v1.1.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
