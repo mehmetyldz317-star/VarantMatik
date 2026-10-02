@@ -19,6 +19,8 @@ public final class PointingSolver {
 
     private double yawOffsetDeg;
     private double altitudeOffsetDeg;
+    private double[] smoothForward;
+    private double[] smoothRight;
 
     public PointingSolver(double yawOffsetDeg, double altitudeOffsetDeg) {
         this.yawOffsetDeg = yawOffsetDeg;
@@ -31,16 +33,24 @@ public final class PointingSolver {
     public void setOffsets(double yaw, double alt) {
         yawOffsetDeg = clamp(yaw, -45, 45);
         altitudeOffsetDeg = clamp(alt, -30, 30);
+        clearSmoothing();
     }
 
     public void reset() {
         yawOffsetDeg = 0;
         altitudeOffsetDeg = 0;
+        clearSmoothing();
+    }
+
+    public void clearSmoothing() {
+        smoothForward = null;
+        smoothRight = null;
     }
 
     public void calibrateTo(double targetAz, double targetAlt, double currentHeading, double currentAlt) {
         yawOffsetDeg = clamp(yawOffsetDeg + Astronomy.norm180(targetAz - currentHeading), -45, 45);
         altitudeOffsetDeg = clamp(altitudeOffsetDeg + (targetAlt - currentAlt), -30, 30);
+        clearSmoothing();
     }
 
     public Pose solve(float[] rotationMatrix, double magneticDeclinationDeg) {
@@ -92,7 +102,26 @@ public final class PointingSolver {
         });
         double[] correctedUp = normalize(cross(correctedRight, correctedForward));
 
-        return new Pose(heading, altitude, correctedRight, correctedUp, correctedForward);
+        final double alpha = 0.24;
+        if (smoothForward == null || smoothRight == null) {
+            smoothForward = correctedForward.clone();
+            smoothRight = correctedRight.clone();
+        } else {
+            smoothForward = normalize(lerp(smoothForward, correctedForward, alpha));
+            smoothRight = normalize(lerp(smoothRight, correctedRight, alpha));
+            // Keep the two axes orthogonal after filtering.
+            double d = dot(smoothRight, smoothForward);
+            smoothRight = normalize(new double[]{
+                    smoothRight[0] - d*smoothForward[0],
+                    smoothRight[1] - d*smoothForward[1],
+                    smoothRight[2] - d*smoothForward[2]
+            });
+        }
+        double[] smoothUp = normalize(cross(smoothRight, smoothForward));
+        double smoothHeading = Astronomy.norm360(Math.toDegrees(Math.atan2(smoothForward[0], smoothForward[1])));
+        double smoothAltitude = Math.toDegrees(Math.asin(clamp(smoothForward[2], -1, 1)));
+
+        return new Pose(smoothHeading, smoothAltitude, smoothRight.clone(), smoothUp, smoothForward.clone());
     }
 
     private static double[] magneticToTrue(double[] v, double declinationDeg) {
@@ -114,6 +143,14 @@ public final class PointingSolver {
                 a[1]*b[2]-a[2]*b[1],
                 a[2]*b[0]-a[0]*b[2],
                 a[0]*b[1]-a[1]*b[0]
+        };
+    }
+
+    private static double[] lerp(double[] a, double[] b, double t) {
+        return new double[]{
+                a[0] + (b[0]-a[0])*t,
+                a[1] + (b[1]-a[1])*t,
+                a[2] + (b[2]-a[2])*t
         };
     }
 
