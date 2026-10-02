@@ -38,7 +38,13 @@ public class SkyView extends View {
     private double altitude = 45;
     private double headingOffset = 0;
     private double fov = 72;
+    private double arHorizontalFov = 58;
+    private double arVerticalFov = 74;
     private boolean sensorMode = false;
+    private boolean hasSensorPose = false;
+    private double[] sensorRight = new double[]{1,0,0};
+    private double[] sensorUp = new double[]{0,0,1};
+    private double[] sensorForward = new double[]{0,1,0};
     private boolean showLabels = false;
     private boolean showConstellations = true;
     private boolean showConstellationNames = true;
@@ -113,12 +119,30 @@ public class SkyView extends View {
     public void setViewDirection(double heading, double altitude) {
         if (!sensorMode) return;
         this.heading = Astronomy.norm360(heading);
-        this.altitude = Math.max(-15, Math.min(90, altitude));
+        this.altitude = Math.max(-89.8, Math.min(89.8, altitude));
         if (listener != null) listener.onDirectionChanged(getEffectiveHeading(), this.altitude);
         invalidate();
     }
 
-    public double getEffectiveHeading(){ return Astronomy.norm360(heading + headingOffset); }
+    public void setSensorPose(double heading, double altitude, double[] right, double[] up, double[] forward) {
+        if (!sensorMode) return;
+        this.heading = Astronomy.norm360(heading);
+        this.altitude = Math.max(-89.8, Math.min(89.8, altitude));
+        this.sensorRight = right.clone();
+        this.sensorUp = up.clone();
+        this.sensorForward = forward.clone();
+        this.hasSensorPose = true;
+        if (listener != null) listener.onDirectionChanged(this.heading, this.altitude);
+        invalidate();
+    }
+
+    public void setCameraFov(double horizontalDeg, double verticalDeg) {
+        if (horizontalDeg > 15 && horizontalDeg < 140) arHorizontalFov = horizontalDeg;
+        if (verticalDeg > 15 && verticalDeg < 140) arVerticalFov = verticalDeg;
+        invalidate();
+    }
+
+    public double getEffectiveHeading(){ return sensorMode ? Astronomy.norm360(heading) : Astronomy.norm360(heading + headingOffset); }
     public double getAltitude(){ return altitude; }
     public double getFov(){ return fov; }
     public double getHeadingOffset(){ return headingOffset; }
@@ -220,7 +244,7 @@ public class SkyView extends View {
         long now=System.currentTimeMillis();
         if (now-lastSolarRefresh>60000) {
             String selectedId = selected == null ? null : selected.id;
-            solar = Astronomy.solarSystem(now);
+            solar = AstroEngineBridge.solarSystem(now, lat, lon, 0.0);
             if (selectedId != null && !selectedId.startsWith("s") && !selectedId.startsWith("h")) {
                 for (SkyObject o:solar) if (o.id.equals(selectedId)) { selected=o; break; }
             }
@@ -228,7 +252,6 @@ public class SkyView extends View {
         }
         if (now-lastAstroUpdate>900) {
             Astronomy.updateAltAz(stars,lat,lon,now);
-            Astronomy.updateAltAz(solar,lat,lon,now);
             lastAstroUpdate=now;
         }
     }
@@ -277,7 +300,8 @@ public class SkyView extends View {
     }
 
     private void drawHorizonAndGrid(Canvas canvas,int w,int h) {
-        float cy=h*.46f;
+        if (sensorMode && hasSensorPose) return;
+        float cy=h*.50f;
         linePaint.setStrokeWidth(1f);
         linePaint.setColor(Color.argb(18,210,230,255));
         for (int alt=-60;alt<=90;alt+=15) {
@@ -296,12 +320,70 @@ public class SkyView extends View {
     }
 
     private void project(SkyObject o,int w,int h) {
+        if (sensorMode && hasSensorPose) {
+            double az=Math.toRadians(o.az);
+            double alt=Math.toRadians(o.alt);
+            double[] v=new double[]{
+                    Math.cos(alt)*Math.sin(az),
+                    Math.cos(alt)*Math.cos(az),
+                    Math.sin(alt)
+            };
+            double xc=dot(v,sensorRight);
+            double yc=dot(v,sensorUp);
+            double zc=dot(v,sensorForward);
+
+            double hfov=arMode?arHorizontalFov:fov*((double)w/h);
+            double vfov=arMode?arVerticalFov:fov;
+            double fx=(w/2.0)/Math.tan(Math.toRadians(hfov/2.0));
+            double fy=(h/2.0)/Math.tan(Math.toRadians(vfov/2.0));
+
+            if (zc <= 0.015) {
+                o.x=Float.NaN; o.y=Float.NaN; o.projectedVisible=false; return;
+            }
+            o.x=(float)(w/2.0 + fx*(xc/zc));
+            o.y=(float)(h/2.0 - fy*(yc/zc));
+            o.projectedVisible=o.alt>-8 && o.x>-60 && o.x<w+60 && o.y>-60 && o.y<h+60;
+            return;
+        }
+
         double da=Astronomy.norm180(o.az-getEffectiveHeading());
         double dv=o.alt-altitude;
         double hfov=fov*((double)w/h);
         o.x=(float)(w/2.0+(da/hfov)*w);
-        o.y=(float)(h*.46-(dv/fov)*h);
+        o.y=(float)(h*.50-(dv/fov)*h);
         o.projectedVisible=Math.abs(da)<hfov*.60 && Math.abs(dv)<fov*.64 && o.alt>-8;
+    }
+
+    private static double dot(double[] a,double[] b) {
+        return a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
+    }
+
+    private static double angularSeparationDeg(double az1,double alt1,double az2,double alt2) {
+        double a1=Math.toRadians(alt1), a2=Math.toRadians(alt2);
+        double dz=Math.toRadians(Astronomy.norm180(az1-az2));
+        double cos=Math.sin(a1)*Math.sin(a2)+Math.cos(a1)*Math.cos(a2)*Math.cos(dz);
+        return Math.toDegrees(Math.acos(Math.max(-1,Math.min(1,cos))));
+    }
+
+    public SkyObject identifyAtCenter(double maxAngleDeg) {
+        refreshAstronomy();
+        SkyObject best=null;
+        double bestAngle=maxAngleDeg;
+        for (SkyObject o:combinedObjects()) {
+            if (o.alt<0) continue;
+            if (o.isStar() && o.mag>(cityFilter?4.5:6.0)) continue;
+            double angle;
+            if (sensorMode && hasSensorPose) {
+                double az=Math.toRadians(o.az), alt=Math.toRadians(o.alt);
+                double[] v=new double[]{Math.cos(alt)*Math.sin(az),Math.cos(alt)*Math.cos(az),Math.sin(alt)};
+                angle=Math.toDegrees(Math.acos(Math.max(-1,Math.min(1,dot(v,sensorForward)))));
+            } else {
+                angle=angularSeparationDeg(o.az,o.alt,getEffectiveHeading(),altitude);
+            }
+            if (angle<bestAngle) { bestAngle=angle; best=o; }
+        }
+        if (best!=null) selectObject(best,false);
+        return best;
     }
 
     private void drawObject(Canvas canvas,SkyObject o) {
@@ -375,7 +457,7 @@ public class SkyView extends View {
     }
 
     private void drawReticle(Canvas canvas,int w,int h) {
-        float cx=w/2f,cy=h*.46f;
+        float cx=w/2f,cy=h*.50f;
         linePaint.setColor(Color.argb(95,255,255,255));linePaint.setStrokeWidth(1f);
         canvas.drawLine(cx-24,cy,cx-8,cy,linePaint);canvas.drawLine(cx+8,cy,cx+24,cy,linePaint);
         canvas.drawLine(cx,cy-24,cx,cy-8,linePaint);canvas.drawLine(cx,cy+8,cx,cy+24,linePaint);
@@ -384,7 +466,7 @@ public class SkyView extends View {
 
     private void drawTracking(Canvas canvas,int w,int h,SkyObject o) {
         project(o,w,h);
-        float cx=w/2f,cy=h*.46f;
+        float cx=w/2f,cy=h*.50f;
         double da=Astronomy.norm180(o.az-getEffectiveHeading());
         double dv=o.alt-altitude;
         float tx=(float)(cx+Math.signum(da)*Math.min(Math.abs(da)*7,w*.34));
