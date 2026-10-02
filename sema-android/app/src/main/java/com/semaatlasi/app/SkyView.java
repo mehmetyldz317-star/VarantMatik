@@ -262,7 +262,7 @@ public class SkyView extends View {
         drawReticle(canvas,w,h);
         if (tracking && selected != null) drawTracking(canvas,w,h,selected);
 
-        postInvalidateDelayed(50);
+        postInvalidateOnAnimation();
     }
 
     private void drawMilkyWay(Canvas canvas,int w,int h) {
