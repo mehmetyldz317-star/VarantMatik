@@ -1,4 +1,4 @@
-name: Build HisseLab V10 APK
+name: Build HisseLab V11 APK
 
 on:
   workflow_dispatch:
@@ -37,7 +37,7 @@ jobs:
       - name: HisseLab V9 kaynak projeyi birlestir
         shell: bash
         run: |
-          rm -rf .ci_build source.tar.xz source.b64 v10.patch v10.patch.xz v10.patch.xz.b64
+          rm -rf .ci_build source.tar.xz source.b64 v10.patch v10.patch.xz v10.patch.xz.b64 v11.patch v11.patch.xz v11.patch.xz.b64 stable.jks.b64
           mkdir -p .ci_build
           cat ci_source/part*.b64 > source.b64
           test "$(wc -c < source.b64)" -eq 39360
@@ -54,7 +54,18 @@ jobs:
           xz -dc v10.patch.xz > v10.patch
           cd .ci_build/HisseLab_V9_Master
           patch -p1 < ../../v10.patch
-          grep -q 'versionName = "10.0"' app/build.gradle.kts
+
+      - name: V11 guclendirme yamasini ve sabit imzayi uygula
+        shell: bash
+        run: |
+          cat v11_patch/part*.b64 > v11.patch.xz.b64
+          test "$(wc -c < v11.patch.xz.b64)" -eq 21120
+          base64 -d v11.patch.xz.b64 > v11.patch.xz
+          xz -dc v11.patch.xz > v11.patch
+          cd .ci_build/HisseLab_V9_Master
+          patch -p1 < ../../v11.patch
+          base64 -d ../../v11_patch/stable-key.b64 > hisselab-stable.jks
+          grep -q 'versionName = "11.0"' app/build.gradle.kts
 
       - name: Analiz motoru ve regresyon testlerini calistir
         working-directory: .ci_build/HisseLab_V9_Master
@@ -64,9 +75,14 @@ jobs:
         working-directory: .ci_build/HisseLab_V9_Master
         run: gradle :app:assembleDebug --stacktrace
 
+      - name: APK imzasini dogrula
+        working-directory: .ci_build/HisseLab_V9_Master
+        run: |
+          /usr/local/lib/android/sdk/build-tools/35.0.0/apksigner verify --print-certs app/build/outputs/apk/debug/app-debug.apk
+
       - name: APK dosyasini yukle
         uses: actions/upload-artifact@v4
         with:
-          name: HisseLab-V10-debug-apk
+          name: HisseLab-V11-stable-apk
           path: .ci_build/HisseLab_V9_Master/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
