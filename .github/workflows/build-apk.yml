@@ -9,18 +9,13 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Depoyu al
-        uses: actions/checkout@v4
-
-      - name: Java 17 kur
-        uses: actions/setup-java@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '17'
-
-      - name: Android SDK paketlerini kur
+      - name: Android SDK
         shell: bash
         run: |
           export ANDROID_HOME=/usr/local/lib/android/sdk
@@ -28,37 +23,26 @@ jobs:
           SDKMANAGER="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
           yes | "$SDKMANAGER" --licenses >/dev/null || true
           "$SDKMANAGER" "platform-tools" "platforms;android-35" "build-tools;35.0.0"
-
-      - name: Gradle 8.9 kur
-        uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
-
-      - name: HisseLab V9 kaynak projeyi birlestir
+      - name: Kaynagi ve yamalari uygula
         shell: bash
         run: |
-          rm -rf .ci_build source.tar.xz source.b64 v10.patch v10.patch.xz v10.patch.xz.b64 v11.patch v11.patch.xz v11.patch.xz.b64 stable.jks.b64
+          rm -rf .ci_build source.* v10.patch* v11.patch*
           mkdir -p .ci_build
           cat ci_source/part*.b64 > source.b64
           test "$(wc -c < source.b64)" -eq 39360
           base64 -d source.b64 > source.tar.xz
           tar -xJf source.tar.xz -C .ci_build
-          test -f .ci_build/HisseLab_V9_Master/settings.gradle.kts
-
-      - name: V10 karar motoru yamasini uygula
-        shell: bash
-        run: |
           cat v10_patch/part*.b64 > v10.patch.xz.b64
           test "$(wc -c < v10.patch.xz.b64)" -eq 15384
           base64 -d v10.patch.xz.b64 > v10.patch.xz
           xz -dc v10.patch.xz > v10.patch
           cd .ci_build/HisseLab_V9_Master
           patch -p1 < ../../v10.patch
-
-      - name: V11 guclendirme yamasini ve sabit imzayi uygula
-        shell: bash
-        run: |
-          cat v11_patch/part*.b64 > v11.patch.xz.b64
+          cd ../..
+          cat v11_patch/part0*.b64 > v11.patch.xz.b64
           test "$(wc -c < v11.patch.xz.b64)" -eq 21120
           base64 -d v11.patch.xz.b64 > v11.patch.xz
           xz -dc v11.patch.xz > v11.patch
@@ -66,22 +50,16 @@ jobs:
           patch -p1 < ../../v11.patch
           base64 -d ../../v11_patch/stable-key.b64 > hisselab-stable.jks
           grep -q 'versionName = "11.0"' app/build.gradle.kts
-
-      - name: Analiz motoru ve regresyon testlerini calistir
+      - name: Testler
         working-directory: .ci_build/HisseLab_V9_Master
         run: bash tools/run_core_tests.sh
-
-      - name: APK olustur
+      - name: APK
         working-directory: .ci_build/HisseLab_V9_Master
         run: gradle :app:assembleDebug --stacktrace
-
-      - name: APK imzasini dogrula
+      - name: Imza dogrula
         working-directory: .ci_build/HisseLab_V9_Master
-        run: |
-          /usr/local/lib/android/sdk/build-tools/35.0.0/apksigner verify --print-certs app/build/outputs/apk/debug/app-debug.apk
-
-      - name: APK dosyasini yukle
-        uses: actions/upload-artifact@v4
+        run: /usr/local/lib/android/sdk/build-tools/35.0.0/apksigner verify --print-certs app/build/outputs/apk/debug/app-debug.apk
+      - uses: actions/upload-artifact@v4
         with:
           name: HisseLab-V11-stable-apk
           path: .ci_build/HisseLab_V9_Master/app/build/outputs/apk/debug/app-debug.apk
