@@ -51,7 +51,7 @@ jobs:
           base64 -d ../../v11_patch/stable-key.b64 > hisselab-stable.jks
           cd ../..
           cat v12_patch/part*.b64 > v12.patch.xz.b64
-          test "$(wc -c < v12.patch.xz.b64)" -eq 11272
+          test "$(wc -c < v12.patch.xz.b64)" -eq 11384
           base64 -d v12.patch.xz.b64 > v12.patch.xz
           xz -dc v12.patch.xz > v12.patch
           cd .ci_build/HisseLab_V9_Master
