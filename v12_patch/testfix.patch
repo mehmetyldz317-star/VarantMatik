@@ -1,0 +1,23 @@
+--- a/app/src/test/java/com/varantmatik/app/AnalysisCoreTest.kt
++++ b/app/src/test/java/com/varantmatik/app/AnalysisCoreTest.kt
+@@ -153,13 +153,14 @@
+ 
+     @Test fun neutralTransitionCannotPanicSellOnSingleBreakSignal() {
+         val candidates = listOf(
+-            linear(80.0, 112.0, 190) + linear(112.0, 92.7, 35),
+-            linear(85.0, 116.0, 180) + linear(116.0, 96.0, 30) + linear(96.0, 92.5, 15),
+-            linear(90.0, 110.0, 175) + linear(110.0, 94.0, 45)
++            linear(60.0, 150.0, 210) + linear(150.0, 90.0, 15),
++            linear(70.0, 145.0, 205) + linear(145.0, 92.0, 20),
++            linear(80.0, 140.0, 200) + linear(140.0, 95.0, 25),
++            linear(80.0, 112.0, 190) + linear(112.0, 92.7, 35)
+         )
+-        val d = candidates.mapNotNull { xs -> AnalysisCore.historicalDecisionAt(patternBars(xs), xs.lastIndex, null) }
+-            .firstOrNull { it.longTrend == "NÖTR" && it.phase in setOf("YATAY / GEÇİŞ", "YATAY / SIKIŞMA", "DİP / GEÇİŞ ADAYI") }
+-        assertNotNull("Neutral transition fixture should be found", d)
++        val decisions = candidates.mapNotNull { xs -> AnalysisCore.historicalDecisionAt(patternBars(xs), xs.lastIndex, null) }
++        val d = decisions.firstOrNull { it.longTrend == "NÖTR" && it.phase in setOf("YATAY / GEÇİŞ", "YATAY / SIKIŞMA", "DİP / GEÇİŞ ADAYI") }
++        assertNotNull("Neutral transition fixture should be found; got=" + decisions.map { it.longTrend + "/" + it.phase }, d)
+         d!!
+         assertNotEquals("SAT", d.holding)
+         assertNotEquals("AŞAĞI", d.direction)
