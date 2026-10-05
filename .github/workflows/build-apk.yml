@@ -104,5 +104,5 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: HisseLab-V13-source
-          path: .ci_build/HisseLab_V13_Source.tar.gz
+          path: HisseLab_V13_Source.tar.gz
           if-no-files-found: error
