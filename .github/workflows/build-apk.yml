@@ -1,4 +1,4 @@
-name: Build HisseLab V11 APK
+name: Build HisseLab V12 APK
 
 on:
   workflow_dispatch:
@@ -29,7 +29,7 @@ jobs:
       - name: Kaynagi ve yamalari uygula
         shell: bash
         run: |
-          rm -rf .ci_build source.* v10.patch* v11.patch*
+          rm -rf .ci_build source.* v10.patch* v11.patch* v12.patch*
           mkdir -p .ci_build
           cat ci_source/part*.b64 > source.b64
           test "$(wc -c < source.b64)" -eq 39360
@@ -49,7 +49,14 @@ jobs:
           cd .ci_build/HisseLab_V9_Master
           patch -p1 < ../../v11.patch
           base64 -d ../../v11_patch/stable-key.b64 > hisselab-stable.jks
-          grep -q 'versionName = "11.0"' app/build.gradle.kts
+          cd ../..
+          cat v12_patch/part*.b64 > v12.patch.xz.b64
+          test "$(wc -c < v12.patch.xz.b64)" -eq 11272
+          base64 -d v12.patch.xz.b64 > v12.patch.xz
+          xz -dc v12.patch.xz > v12.patch
+          cd .ci_build/HisseLab_V9_Master
+          patch -p1 < ../../v12.patch
+          grep -q 'versionName = "12.0"' app/build.gradle.kts
       - name: Testler
         working-directory: .ci_build/HisseLab_V9_Master
         run: bash tools/run_core_tests.sh
@@ -61,6 +68,6 @@ jobs:
         run: /usr/local/lib/android/sdk/build-tools/35.0.0/apksigner verify --print-certs app/build/outputs/apk/debug/app-debug.apk
       - uses: actions/upload-artifact@v4
         with:
-          name: HisseLab-V11-stable-apk
+          name: HisseLab-V12-stable-apk
           path: .ci_build/HisseLab_V9_Master/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
