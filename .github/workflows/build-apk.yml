@@ -1,4 +1,4 @@
-name: Build HisseLab V14 APK
+name: Build HisseLab V15 APK
 
 on:
   workflow_dispatch:
@@ -30,10 +30,10 @@ jobs:
         with:
           gradle-version: '8.9'
 
-      - name: V13 tabanini yeniden kur ve V14 motorunu uygula
+      - name: V14 tabanini yeniden kur ve V15 motorunu uygula
         shell: bash
         run: |
-          rm -rf .ci_build source.* v10.patch* v11.patch* v12.patch* v13.patch* v14.patch*
+          rm -rf .ci_build source.* v10.patch* v11.patch* v12.patch* v13.patch* v14.patch* v15.patch*
           mkdir -p .ci_build
 
           cat ci_source/part*.b64 > source.b64
@@ -81,10 +81,18 @@ jobs:
           xz -dc v14.patch.xz > v14.patch
           cd .ci_build/HisseLab_V9_Master
           patch -p1 < ../../v14.patch
-          grep -q 'versionName = "14.0"' app/build.gradle.kts
-          grep -q 'versionCode = 14' app/build.gradle.kts
+          cd ../..
 
-      - name: V14 karar motoru ve otomatik backtest testleri
+          cat v15_patch/part*.b64 > v15.patch.xz.b64
+          test "$(wc -c < v15.patch.xz.b64)" -eq 20364
+          base64 -d v15.patch.xz.b64 > v15.patch.xz
+          xz -dc v15.patch.xz > v15.patch
+          cd .ci_build/HisseLab_V9_Master
+          patch -p1 < ../../v15.patch
+          grep -q 'versionName = "15.0"' app/build.gradle.kts
+          grep -q 'versionCode = 15' app/build.gradle.kts
+
+      - name: V15 temiz islem motoru ve regresyon testleri
         working-directory: .ci_build/HisseLab_V9_Master
         run: bash tools/run_core_tests.sh
 
@@ -101,16 +109,16 @@ jobs:
         shell: bash
         run: |
           rm -f hisselab-stable.jks
-          tar -czf ../../HisseLab_V14_Source.tar.gz .
+          tar -czf ../../HisseLab_V15_Source.tar.gz .
 
       - uses: actions/upload-artifact@v4
         with:
-          name: HisseLab-V14-stable-apk
+          name: HisseLab-V15-stable-apk
           path: .ci_build/HisseLab_V9_Master/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
 
       - uses: actions/upload-artifact@v4
         with:
-          name: HisseLab-V14-source
-          path: HisseLab_V14_Source.tar.gz
+          name: HisseLab-V15-source
+          path: HisseLab_V15_Source.tar.gz
           if-no-files-found: error
