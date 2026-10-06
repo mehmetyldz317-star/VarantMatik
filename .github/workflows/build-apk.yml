@@ -1,4 +1,4 @@
-name: Build HisseLab V16 APK
+name: Build HisseLab V17 APK
 
 on:
   workflow_dispatch:
@@ -30,10 +30,10 @@ jobs:
         with:
           gradle-version: '8.9'
 
-      - name: V15 tabanini yeniden kur ve V16 motorunu uygula
+      - name: V16 tabanini yeniden kur ve V17 motorunu uygula
         shell: bash
         run: |
-          rm -rf .ci_build source.* v10.patch* v11.patch* v12.patch* v13.patch* v14.patch* v15.patch* v16.patch*
+          rm -rf .ci_build source.* v10.patch* v11.patch* v12.patch* v13.patch* v14.patch* v15.patch* v16.patch* v17.patch*
           mkdir -p .ci_build
 
           cat ci_source/part*.b64 > source.b64
@@ -97,10 +97,18 @@ jobs:
           xz -dc v16.patch.xz > v16.patch
           cd .ci_build/HisseLab_V9_Master
           patch -p1 < ../../v16.patch
-          grep -q 'versionName = "16.0"' app/build.gradle.kts
-          grep -q 'versionCode = 16' app/build.gradle.kts
+          cd ../..
 
-      - name: V16 zincir motoru ve regresyon testleri
+          cat v17_patch/part*.b64 > v17.patch.xz.b64
+          test "$(wc -c < v17.patch.xz.b64)" -eq 24876
+          base64 -d v17.patch.xz.b64 > v17.patch.xz
+          xz -dc v17.patch.xz > v17.patch
+          cd .ci_build/HisseLab_V9_Master
+          patch -p1 < ../../v17.patch
+          grep -q 'versionName = "17.0"' app/build.gradle.kts
+          grep -q 'versionCode = 17' app/build.gradle.kts
+
+      - name: V17 adaptif hafiza ve walk-forward regresyon testleri
         working-directory: .ci_build/HisseLab_V9_Master
         run: bash tools/run_core_tests.sh
 
@@ -117,16 +125,16 @@ jobs:
         shell: bash
         run: |
           rm -f hisselab-stable.jks
-          tar -czf ../../HisseLab_V16_Source.tar.gz .
+          tar -czf ../../HisseLab_V17_Source.tar.gz .
 
       - uses: actions/upload-artifact@v4
         with:
-          name: HisseLab-V16-stable-apk
+          name: HisseLab-V17-stable-apk
           path: .ci_build/HisseLab_V9_Master/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
 
       - uses: actions/upload-artifact@v4
         with:
-          name: HisseLab-V16-source
-          path: HisseLab_V16_Source.tar.gz
+          name: HisseLab-V17-source
+          path: HisseLab_V17_Source.tar.gz
           if-no-files-found: error
