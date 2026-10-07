@@ -1,0 +1,27 @@
+--- a/app/src/main/java/com/varantmatik/app/AnalysisCore.kt
++++ b/app/src/main/java/com/varantmatik/app/AnalysisCore.kt
+@@ -1376,8 +1376,9 @@
+         val stabilityPenalty = when {
+             activeStability == null || activeStability.samples < 3 -> 0.0
+             activeStability.score < 55.0 || activeStability.agreementPct < 45.0 -> 8.0
+-            activeStability.score < 65.0 || activeStability.agreementPct < 58.0 -> 5.0
+-            activeStability.score < 72.0 || activeStability.agreementPct < 66.0 -> 2.5
++            activeStability.agreementPct < 58.0 -> 5.0
++            activeStability.score < 60.0 || activeStability.agreementPct < 65.0 -> 3.0
++            activeStability.score < 68.0 -> 1.5
+             else -> 0.0
+         }
+         val putExtra = if (!up) 2.0 else 0.0
+@@ -1389,8 +1390,11 @@
+         val developingMin = 66.0 + setupPenalty * 0.35
+         if (activeProfile != null) reasons += activeProfile.reasons
+         if (activeStability != null) reasons += activeStability.reasons
++        // A fast but genuine turn may need a few sessions before the stability average catches up.
++        // Require at least 65% directional agreement, while allowing a 60+ stability score so
++        // a clean trigger can confirm inside the intended 1-5 day window.
+         val stabilityClean = activeStability == null || activeStability.samples < 3 ||
+-            (activeStability.score >= 68.0 && activeStability.agreementPct >= 60.0)
++            (activeStability.score >= 60.0 && activeStability.agreementPct >= 65.0)
+         val status = when {
+             structuralReady && triggerReady && stabilityClean && setupScore >= cleanSetupMin && triggerScore >= cleanTriggerMin && combined >= cleanCombinedMin -> "TEMİZ İŞLEM"
+             structuralReady && setupScore >= waitSetupMin && triggerScore >= waitTriggerMin -> "TEYİT BEKLE"

@@ -113,6 +113,7 @@ jobs:
           xz -dc v18.patch.xz > v18.patch
           cd .ci_build/HisseLab_V9_Master
           patch -p1 < ../../v18.patch
+          patch -p1 < ../../v18_hotfix.patch
           grep -q 'versionName = "18.0"' app/build.gradle.kts
           grep -q 'versionCode = 18' app/build.gradle.kts
 
