@@ -1,0 +1,236 @@
+--- a/app/build.gradle.kts
++++ b/app/build.gradle.kts
+@@ -11,8 +11,8 @@
+         applicationId = "com.varantmatik.app"
+         minSdk = 26
+         targetSdk = 35
+-        versionCode = 19
+-        versionName = "19.0"
++        versionCode = 20
++        versionName = "19.1"
+     }
+ 
+     signingConfigs {
+--- a/app/src/main/assets/index.html
++++ b/app/src/main/assets/index.html
+@@ -1,12 +1,13 @@
+ <!doctype html>
+ <html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+-<meta name="theme-color" content="#07121f"><title>HisseLab v18</title>
++<meta name="theme-color" content="#07121f"><title>HisseLab v19.1</title>
+ <style>
+ :root{--bg:#07121f;--card:#0d1e30;--card2:#081725;--line:#1d3a53;--text:#f2f7fb;--muted:#8da7bb;--green:#34d399;--blue:#38bdf8;--amber:#fbbf24;--red:#fb7185;--purple:#a78bfa;--shadow:0 14px 36px rgba(0,0,0,.25)}
+ *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}body{min-height:100vh;background:radial-gradient(circle at 12% -8%,#103e63 0,transparent 30%),linear-gradient(180deg,#07121f,#091827 55%,#07121f)}button,input,select,textarea{font:inherit}.app{max-width:760px;margin:auto;padding:12px 10px 96px}.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.brand{display:flex;align-items:center;gap:10px}.logo{width:48px;height:48px;border-radius:15px;background:linear-gradient(135deg,var(--green),var(--blue));display:grid;place-items:center;color:#032018;font-weight:1000;box-shadow:0 8px 24px rgba(56,189,248,.22)}h1{font-size:20px;margin:0}.sub{font-size:10px;color:var(--muted);margin-top:2px}.live{font-size:9px;border:1px solid var(--line);padding:6px 8px;border-radius:99px;background:#081827;color:#bdd0df}.live i{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:4px}.page{display:none}.page.on{display:block}.hero,.card{background:rgba(13,30,48,.97);border:1px solid var(--line);border-radius:19px;padding:15px;margin-top:10px;box-shadow:var(--shadow)}.hero{background:linear-gradient(145deg,#0d263d,#0b1e31 62%,#0b2530);border-color:#24516e}.eyebrow{font-size:9px;letter-spacing:1.3px;color:#7dd3fc;font-weight:900}.hero h2{font-size:22px;line-height:1.15;margin:6px 0 8px}.hero p,.small{font-size:10px;line-height:1.5}.muted{color:var(--muted)}.tiny{font-size:8.5px}.btn{border:0;border-radius:13px;padding:12px 14px;font-weight:950;color:white;background:#173650;cursor:pointer}.btn.primary{background:linear-gradient(135deg,#10b981,var(--green));color:#031e15}.btn.blue{background:linear-gradient(135deg,#0284c7,var(--blue));color:#031722}.btn.ghost{background:#0a1928;border:1px solid var(--line);color:#d5e5f1}.btn.red{background:#512435;border:1px solid #8b4055}.btn.full{width:100%}.btn.sm{padding:8px 10px;border-radius:10px;font-size:9px}.field{width:100%;border:1px solid #294b67;background:#071522;color:#fff;border-radius:12px;padding:11px 12px;outline:none;font-size:13px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.row{display:flex;gap:7px;align-items:center;flex-wrap:wrap}label{display:block;font-size:9px;color:var(--muted);margin:0 0 5px}.sectionTitle{display:flex;align-items:center;justify-content:space-between;margin:15px 2px 7px;gap:8px}.sectionTitle b{font-size:12px}.sectionTitle span{font-size:9px;color:var(--muted)}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.kpi,.metric{background:#081827;border:1px solid #193850;border-radius:11px;padding:8px}.kpi span,.metric span{display:block;color:var(--muted);font-size:8px}.kpi b{display:block;font-size:14px;margin-top:3px}.metric b{display:block;font-size:10px;margin-top:2px}.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:7px}.empty{text-align:center;padding:27px 13px;color:#7893a9;font-size:10px;border:1px dashed #25445f;border-radius:14px}.candidate{background:linear-gradient(180deg,#10263c,#091927);border:1px solid #25445f;border-radius:17px;padding:12px;margin:8px 0}.candidate.aplus{border-color:#2fbe7d}.ch{display:flex;justify-content:space-between;gap:10px}.symbol{font-size:19px;font-weight:1000}.dir{font-size:9px;color:#91aabc;margin-top:2px}.cscore{font-size:25px;font-weight:1000;text-align:right}.cscore small{font-size:8px;color:var(--muted)}.bar{height:6px;border-radius:99px;background:#06111c;overflow:hidden;margin:8px 0}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--green))}.tag{display:inline-block;padding:5px 7px;border-radius:8px;font-size:8px;font-weight:950;margin:4px 3px 0 0}.tg{background:rgba(52,211,153,.13);color:#86efac}.tb{background:rgba(56,189,248,.13);color:#7dd3fc}.ta{background:rgba(251,191,36,.13);color:#fde68a}.tr{background:rgba(251,113,133,.13);color:#fda4af}.tp{background:rgba(167,139,250,.13);color:#c4b5fd}.lock{background:#0a2022;border:1px solid #246158;color:#8ff0c8;border-radius:13px;padding:10px;font-size:9px;line-height:1.45}.decisionGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:8px}.decisionBox{background:#081827;border:1px solid #244861;border-radius:14px;padding:12px;min-height:85px}.decisionBox span{display:block;font-size:8px;color:var(--muted)}.decisionBox b{display:block;font-size:18px;margin-top:5px}.decisionBox.good{border-color:#2f9d70}.decisionBox.bad{border-color:#8c4051}.decisionBox.warn{border-color:#846c2e}.reason{background:#081827;border:1px solid #193850;border-radius:9px;padding:8px;font-size:9px;color:#bfd0dc;margin-top:5px}.warning{background:#2a2110;border:1px solid #665625;border-radius:11px;padding:9px;color:#f5dfa3;font-size:9px;margin-top:6px}.resultGood{background:#0a241d;border:1px solid #2f9d70}.resultPartial{background:#27220e;border:1px solid #846c2e}.resultBad{background:#2a1520;border:1px solid #8c4051}.bottom{position:fixed;left:0;right:0;bottom:0;background:rgba(5,14,24,.96);backdrop-filter:blur(12px);border-top:1px solid #18334a;padding:6px 8px calc(6px + env(safe-area-inset-bottom));z-index:30}.nav{max-width:760px;margin:auto;display:grid;grid-template-columns:repeat(4,1fr);gap:4px}.nav button{border:0;background:transparent;color:#6f899e;padding:8px 3px;border-radius:10px;font-size:8px;font-weight:900}.nav button b{display:block;font-size:17px;margin-bottom:2px}.nav button.on{background:#10263a;color:#dff5ff}.progressWrap{display:none;position:fixed;inset:0;background:rgba(2,8,14,.74);z-index:100;align-items:center;justify-content:center;padding:20px}.progressWrap.on{display:flex}.progressCard{width:min(410px,100%);background:#0c1f31;border:1px solid #2a516d;border-radius:19px;padding:17px}.progressLine{height:8px;background:#05101b;border-radius:99px;overflow:hidden}.progressLine i{display:block;height:100%;width:3%;background:linear-gradient(90deg,var(--blue),var(--green));transition:width .2s}.listItem{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#081827;border:1px solid #1c3a52;padding:10px;border-radius:12px;margin-top:6px}.listItem b{font-size:12px}@media(max-width:520px){.grid3,.decisionGrid{grid-template-columns:1fr}.grid2{grid-template-columns:1fr 1fr}.metrics,.kpis{grid-template-columns:1fr 1fr}}
++.evidence{border-top:1px solid var(--line);margin-top:10px;padding-top:3px}.evidence details{margin-top:8px}.evidence summary{cursor:pointer;font-size:10px;color:#bcdcec;padding:9px 0}.checkrow{display:flex;justify-content:space-between;gap:10px;font-size:10px;padding:7px 0;border-bottom:1px solid var(--line)}.checkrow b{text-align:right;font-size:9px}.checkrow.pass{color:#86efac}.checkrow.pending{color:#fde68a}
+ </style></head><body>
+ <div class="app">
+-<header class="top"><div class="brand"><div class="logo">HL</div><div><h1>HisseLab</h1><div class="sub">v18 · stabilite + teyit + temiz işlem → varant seçici</div></div></div><div class="live"><i></i><span>veri motoru</span></div></header>
++<header class="top"><div class="brand"><div class="logo">HL</div><div><h1>HisseLab</h1><div class="sub">v19.1 · stabilite + teyit + temiz işlem → varant seçici</div></div></div><div class="live"><i></i><span>veri motoru</span></div></header>
+ 
+ <main id="p-home" class="page on">
+ <section class="hero"><div class="eyebrow">TEMİZ POZİSYON AVCISI</div><h2>Her gün işlem değil.<br>Yalnız temiz fırsat.</h2><p>Erken uyarı ayrı gösterilir; temiz sinyal için son iki kapanışta aynı yön ve yeterli geçmiş aranır. Analiz tamamlanmış günlük mumlarla yapılır. <b>Varant yalnız TEMİZ İŞLEM oluşunca</b> açılır. Hiçbir aday yeterince temiz değilse sonuç İŞLEM YOK olur.</p><div class="row"><button class="btn primary" onclick="scanToday()">⚡ TEMİZ İŞLEM TARA</button></div></section>
+@@ -66,6 +67,12 @@
+ function runDecisionAudit(){if(!native)return noNative();const s=$('#auditSymbols').value.trim();if(!s)return;activeReq=id();progress(true,'Toplu sınav hazırlanıyor',4);VM.auditSymbols(s,+$('#auditYears').value,+$('#auditStep').value,+$('#auditHorizon').value,activeReq)}
+ function runBacktest(){if(!native)return noNative();const s=$('#btSymbol').value.trim().toUpperCase();if(!s)return;activeReq=id();progress(true,'Geçmiş sinyaller yeniden kuruluyor',4);VM.backtestSymbol(s,$('#btDir').value,+$('#btYears').value,+$('#btThreshold').value,activeReq)}
+ window.onNativeEvent=function(event,req,data){if(event==='progress'){if(req===activeReq)progress(true,data.message,data.percent);return}if(event==='error'){if(req===activeReq)progress(false);alert(data.message||'Veri alınamadı');return}if(event==='underlyings'){const dl=$('#underlyings');dl.innerHTML=(data.underlyings||[]).map(x=>`<option value="${esc(x)}"></option>`).join('');return}if(req!==activeReq)return;progress(false);if(event==='opportunities')renderOpportunities(data);if(event==='scan')renderWarrants(data);if(event==='historicalDecision')renderHistorical(data);if(event==='historicalOutcome')renderOutcome(data);if(event==='decisionAudit')renderDecisionAudit(data);if(event==='backtest')renderBacktest(data)}
++function scoreText(x,d=1){return x===null||x===undefined||!Number.isFinite(+x)?'—':fmt(x,d)}
++function signalEvidence(x){
++  const checks=x.confirmationChecks||[],ok=checks.filter(y=>y.passed===true).length;
++  const obstacles=[...new Set([...(x.vetoes||[]),...(x.confirmationsNeeded||[])])];
++  return `<div class="evidence"><div class="metrics"><div class="metric"><span>Stabilite · eşik 68</span><b>${scoreText(x.stabilityScore)}</b></div><div class="metric"><span>Yön uyumu · eşik %65</span><b>${scoreText(x.stabilityAgreement)}%</b></div><div class="metric"><span>Gözlem · en az 5 gün</span><b>${scoreText(x.stabilitySamples,0)} gün</b></div><div class="metric"><span>Aynı yönde · en az 2</span><b>${scoreText(x.stabilityConsecutive,0)} kapanış</b></div></div><details><summary>${checks.length?`${ok}/${checks.length} temiz sinyal koşulu tamam`:'Teyit bilgisi yok'} · ayrıntılar</summary>${checks.map(y=>`<div class="checkrow ${y.passed?'pass':'pending'}"><span>${y.passed?'✓':'○'} ${esc(y.label)}</span><b>${esc(y.value)}</b></div>`).join('')}${obstacles.length?`<div class="small muted" style="margin-top:9px">Bekleme nedenleri</div>${obstacles.map(y=>`<div class="reason">${esc(y)}</div>`).join('')}`:`<div class="small muted" style="margin-top:8px">${checks.length&&ok===checks.length?'Tüm temiz sinyal koşulları tamam.':'Temiz sinyal koşulları henüz tamamlanmadı.'}</div>`}<div class="small muted" style="margin-top:8px">Risk uygunluğu: ${scoreText(x.riskScore,0)}/100. Yüksek puan, modelde daha uygun risk koşullarını ifade eder. Puanlar başarı olasılığı değildir.</div></details></div>`;
++}
+ function renderOpportunities(d){
+   const c=d.candidates||[],w=d.waiting||[],f=d.developing||[];
+   $('#oppUpdated').textContent=d.updated||'—';
+@@ -75,21 +82,21 @@
+     $('#opportunities').innerHTML='<b>ŞU AN TEMİZ İŞLEM YOK.</b><br>Bu, programın işlem üretmek için zorlamadığı anlamına gelir.';
+   }else{
+     $('#opportunities').className='';
+-    $('#opportunities').innerHTML=c.map(x=>`<div class="candidate aplus"><div class="ch"><div><div class="symbol">${esc(x.symbol)}</div><div class="tiny muted">Kapanış: ${esc(x.signalDate||'—')}</div><div class="dir">${x.direction==='YUKARI'?'↑ YUKARI · CALL':'↓ AŞAĞI · PUT'} · ${esc(x.timingWindow||'0–3 işlem günü')}</div></div><div class="cscore">${fmt(x.setupScore,0)}<small> temiz skor</small></div></div><span class="tag tg">TEMİZ İŞLEM</span><span class="tag tb">${esc(x.phase||'—')}</span><span class="tag tp">Kurulum ${fmt(x.opportunityScore,0)}</span><span class="tag tg">Tetik ${fmt(x.triggerScore,0)}</span>${x.adaptiveSamples?`<span class="tag ${x.adaptivePenalty>0?'tr':'tb'}">Hafıza ${x.adaptiveSamples} · ${fmt(x.adaptiveSuccess,0)}%</span>`:''}<div class="metrics"><div class="metric"><span>Giriş</span><b>${fmt(x.entryQuality,0)}</b></div><div class="metric"><span>Trend</span><b>${fmt(x.trendStrength,0)}</b></div><div class="metric"><span>Piyasa</span><b>${fmt(x.marketScore,0)}</b></div><div class="metric"><span>4s teyit</span><b>${x.fourHour&&x.fourHour.available?fmt(x.fourHour.score,0):'—'}</b></div></div><div class="lock" style="margin-top:8px"><b>NİHAİ:</b> ${esc(x.finalAction||'TEMİZ İŞLEM')}</div><div class="row" style="margin-top:8px"><button class="btn blue sm" onclick="findWarrants('${esc(x.symbol)}','${esc(x.warrantBias)}',${x.horizon||20})">VARANTLARI BUL</button><button class="btn ghost sm" onclick="sendPast('${esc(x.symbol)}')">GEÇMİŞTE SINA</button><button class="btn ghost sm" onclick="quickWatch('${esc(x.symbol)}')">☆ İZLE</button></div></div>`).join('');
++    $('#opportunities').innerHTML=c.map(x=>`<div class="candidate aplus"><div class="ch"><div><div class="symbol">${esc(x.symbol)}</div><div class="tiny muted">Kapanış: ${esc(x.signalDate||'—')}</div><div class="dir">${x.direction==='YUKARI'?'↑ YUKARI · CALL':'↓ AŞAĞI · PUT'} · ${esc(x.timingWindow||'0–3 işlem günü')}</div></div><div class="cscore">${fmt(x.setupScore,0)}<small> birleşik skor</small></div></div><span class="tag tg">TEMİZ İŞLEM</span><span class="tag tb">${esc(x.phase||'—')}</span><span class="tag tp">Kurulum ${fmt(x.opportunityScore,0)}</span><span class="tag tg">Tetik ${fmt(x.triggerScore,0)}</span>${x.adaptiveSamples?`<span class="tag ${x.adaptivePenalty>0?'tr':'tb'}">Hafıza ${x.adaptiveSamples} · ${fmt(x.adaptiveSuccess,0)}%</span>`:''}<div class="metrics"><div class="metric"><span>Yön kalitesi</span><b>${fmt(x.dailyQuality,0)}</b></div><div class="metric"><span>Trend</span><b>${fmt(x.trendStrength,0)}</b></div><div class="metric"><span>Piyasa</span><b>${fmt(x.marketScore,0)}</b></div><div class="metric"><span>4s teyit</span><b>${x.fourHour&&x.fourHour.available?fmt(x.fourHour.score,0):'—'}</b></div></div>${signalEvidence(x)}<div class="lock" style="margin-top:8px"><b>NİHAİ:</b> ${esc(x.finalAction||'TEMİZ İŞLEM')}</div><div class="row" style="margin-top:8px"><button class="btn blue sm" onclick="findWarrants('${esc(x.symbol)}','${esc(x.warrantBias)}',${x.horizon||20})">VARANTLARI BUL</button><button class="btn ghost sm" onclick="sendPast('${esc(x.symbol)}')">GEÇMİŞTE SINA</button><button class="btn ghost sm" onclick="quickWatch('${esc(x.symbol)}')">☆ İZLE</button></div></div>`).join('');
+   }
+   if(!w.length){
+     $('#waitingOpportunities').className='empty';
+     $('#waitingOpportunities').innerHTML='Şu an erken uyarı veya teyit bekleyen aday yok.';
+   }else{
+     $('#waitingOpportunities').className='';
+-    $('#waitingOpportunities').innerHTML=w.map(x=>`<div class="candidate"><div class="ch"><div><div class="symbol">${esc(x.symbol)}</div><div class="tiny muted">Kapanış: ${esc(x.signalDate||'—')}</div><div class="dir">${esc(x.direction)} · ${esc(x.warrantBias)} adayı · ${esc(x.timingWindow||'1–5 gün')}</div></div><div class="cscore">${fmt(x.opportunityScore||x.setupScore,0)}<small> kurulum</small></div></div><span class="tag ta">${esc(x.action||'TEYİT BEKLE')}</span><span class="tag tr">ŞİMDİ VARANT ALMA</span>${x.adaptiveSamples?`<span class="tag ${x.adaptivePenalty>0?'tr':'tb'}">${esc(x.adaptiveLabel||'HAFIZA')} · ${x.adaptiveSamples} işlem</span>`:''}<div class="metrics"><div class="metric"><span>Kurulum</span><b>${fmt(x.opportunityScore,0)}</b></div><div class="metric"><span>Tetik</span><b>${fmt(x.triggerScore,0)}</b></div><div class="metric"><span>Trend</span><b>${fmt(x.trendStrength,0)}</b></div><div class="metric"><span>Risk</span><b>${fmt(x.riskScore,0)}</b></div></div><div class="small muted" style="margin-top:6px">${(x.confirmationsNeeded||x.vetoes||[]).slice(0,3).map(esc).join(' · ')||'Ek teyit bekleniyor'}</div><div class="row" style="margin-top:8px"><button class="btn ghost sm" onclick="sendPast('${esc(x.symbol)}')">GEÇMİŞTE SINA</button><button class="btn ghost sm" onclick="quickWatch('${esc(x.symbol)}')">☆ İZLE</button></div></div>`).join('');
++    $('#waitingOpportunities').innerHTML=w.map(x=>`<div class="candidate"><div class="ch"><div><div class="symbol">${esc(x.symbol)}</div><div class="tiny muted">Kapanış: ${esc(x.signalDate||'—')}</div><div class="dir">${esc(x.direction)} · ${esc(x.warrantBias)} adayı · ${esc(x.timingWindow||'1–5 gün')}</div></div><div class="cscore">${fmt(x.opportunityScore||x.setupScore,0)}<small> kurulum</small></div></div><span class="tag ta">${esc(x.action||'TEYİT BEKLE')}</span><span class="tag tr">ŞİMDİ VARANT ALMA</span>${x.adaptiveSamples?`<span class="tag ${x.adaptivePenalty>0?'tr':'tb'}">${esc(x.adaptiveLabel||'HAFIZA')} · ${x.adaptiveSamples} işlem</span>`:''}<div class="metrics"><div class="metric"><span>Kurulum</span><b>${fmt(x.opportunityScore,0)}</b></div><div class="metric"><span>Tetik</span><b>${fmt(x.triggerScore,0)}</b></div><div class="metric"><span>Trend</span><b>${fmt(x.trendStrength,0)}</b></div><div class="metric"><span>Risk uygunluğu</span><b>${fmt(x.riskScore,0)}</b></div></div><div class="small muted" style="margin-top:6px">${(x.confirmationsNeeded||x.vetoes||[]).slice(0,2).map(esc).join(' · ')||'Ek teyit bekleniyor'}</div>${signalEvidence(x)}<div class="row" style="margin-top:8px"><button class="btn ghost sm" onclick="sendPast('${esc(x.symbol)}')">GEÇMİŞTE SINA</button><button class="btn ghost sm" onclick="quickWatch('${esc(x.symbol)}')">☆ İZLE</button></div></div>`).join('');
+   }
+   if(!f.length){
+     $('#developingOpportunities').className='empty';
+     $('#developingOpportunities').innerHTML='Erken kurulum adayı yok.';
+   }else{
+     $('#developingOpportunities').className='';
+-    $('#developingOpportunities').innerHTML=f.map(x=>`<div class="candidate"><div class="ch"><div><div class="symbol">${esc(x.symbol)}</div><div class="tiny muted">Kapanış: ${esc(x.signalDate||'—')}</div><div class="dir">${esc(x.direction)} yönünde erken kurulum · ${esc(x.timingWindow||'izle')}</div></div><div class="cscore">${fmt(x.opportunityScore||0,0)}<small> kurulum</small></div></div><span class="tag tb">FIRSAT OLUŞUYOR</span><span class="tag tr">VARANT YOK</span><div class="small muted" style="margin-top:6px">Tetik ${fmt(x.triggerScore,0)} · ${(x.confirmationsNeeded||x.vetoes||[]).slice(0,2).map(esc).join(' · ')||'Tetikleyici bekleniyor'}</div><div class="row" style="margin-top:8px"><button class="btn ghost sm" onclick="sendPast('${esc(x.symbol)}')">GEÇMİŞTE SINA</button><button class="btn ghost sm" onclick="quickWatch('${esc(x.symbol)}')">☆ İZLE</button></div></div>`).join('');
++    $('#developingOpportunities').innerHTML=f.map(x=>`<div class="candidate"><div class="ch"><div><div class="symbol">${esc(x.symbol)}</div><div class="tiny muted">Kapanış: ${esc(x.signalDate||'—')}</div><div class="dir">${esc(x.direction)} yönünde erken kurulum · ${esc(x.timingWindow||'izle')}</div></div><div class="cscore">${fmt(x.opportunityScore||0,0)}<small> kurulum</small></div></div><span class="tag tb">FIRSAT OLUŞUYOR</span><span class="tag tr">VARANT YOK</span><div class="small muted" style="margin-top:6px">Tetik ${fmt(x.triggerScore,0)} · ${(x.confirmationsNeeded||x.vetoes||[]).slice(0,2).map(esc).join(' · ')||'Tetikleyici bekleniyor'}</div>${signalEvidence(x)}<div class="row" style="margin-top:8px"><button class="btn ghost sm" onclick="sendPast('${esc(x.symbol)}')">GEÇMİŞTE SINA</button><button class="btn ghost sm" onclick="quickWatch('${esc(x.symbol)}')">☆ İZLE</button></div></div>`).join('');
+   }
+ }
+ function findWarrants(symbol,bias,horizon=20){
+@@ -113,8 +120,8 @@
+   $('#pastResult').className='card';
+   $('#pastResult').innerHTML=`<div class="lock">🔒 <b>GELECEK VERİ KİLİTLİ.</b> Analiz yalnız ${esc(d.effectiveDate)} ve öncesiyle yapıldı. ${d.futureBarsExcluded||0} sonraki bar karar motorundan dışlandı.${exact?'':`<br>Seçtiğin ${esc(d.requestedDate)} işlem günü değildi; ${esc(d.effectiveDate)} kullanıldı.`}</div>
+   <div class="ch" style="margin-top:10px"><div><div class="symbol">${esc(d.symbol)} · ${esc(d.effectiveDate)}</div><div class="dir">Kapanış ${fmt(d.price,2)}</div></div><div class="cscore">${fmt(d.confidence,0)}<small> analiz kalitesi</small></div></div>
+-  <div class="candidate ${canTrade?'aplus':''}" style="margin-top:9px"><div class="ch"><div><div class="eyebrow">V19 · HAFIZA + TARİH DAYANIKLILIĞI + TEYİT</div><div class="symbol">${esc(c.status||'İŞLEM YOK')}</div><div class="dir">${c.direction&&c.direction!=='YOK'?esc(c.direction)+' · '+esc(c.warrantBias)+' · '+esc(c.timingWindow):'Tek yönlü kurulum yok'}</div></div><div class="cscore">${fmt(c.score||0,0)}<small> birleşik skor</small></div></div><div style="margin-top:5px"><span class="tag tb">Kurulum ${fmt(c.setupScore||0,0)}</span><span class="tag ${canTrade?'tg':'ta'}">Tetik ${fmt(c.triggerScore||0,0)}</span>${candidate?'<span class="tag tr">ŞİMDİ VARANT ALMA</span>':''}${c.stabilitySamples?`<span class="tag ${c.stabilityScore>=70?'tg':c.stabilityScore>=58?'ta':'tr'}">STABİLİTE ${fmt(c.stabilityScore,0)} · ${fmt(c.stabilityAgreement,0)}%</span>`:''}${c.adaptiveSamples?`<span class="tag ${c.adaptivePenalty>0?'tr':'tp'}">${esc(c.adaptiveLabel||'HAFIZA')} · ${c.adaptiveSamples} işlem · ${fmt(c.adaptiveSuccess,0)}%</span>`:''}</div><div class="lock" style="margin-top:8px"><b>NİHAİ KARAR:</b> ${esc(c.finalAction||c.status||'İŞLEM YOK')}${c.adaptivePenalty>0?` · hafıza filtresi +${fmt(c.adaptivePenalty,1)}`:''}</div>${(c.confirmationsNeeded||[]).slice(0,4).map(x=>`<div class="warning">Teyit bekliyor: ${esc(x)}</div>`).join('')}</div>
+-  <div class="metrics"><div class="metric"><span>Hareket evresi</span><b>${esc(d.phase||'—')}</b></div><div class="metric"><span>Ana trend</span><b>${esc(d.longTrend||'—')}</b></div><div class="metric"><span>Alt motor kararı</span><b>${esc(d.newPosition||'—')}</b></div><div class="metric"><span>5–20g görünüm</span><b>${esc(d.tacticalView||d.direction)}</b></div><div class="metric"><span>Giriş kalitesi</span><b>${fmt(d.entryQuality,0)}</b></div><div class="metric"><span>Dönüş gücü</span><b>${fmt(d.reversalScore,0)}</b></div><div class="metric"><span>Aşırılaşma</span><b>${fmt(d.extensionRisk,0)}</b></div><div class="metric"><span>Bozulma riski</span><b>${fmt(d.breakdownRisk,0)}</b></div><div class="metric"><span>Trend gücü</span><b>${fmt(d.trendStrength,0)}</b></div><div class="metric"><span>Tarih stabilitesi</span><b>${c.stabilitySamples?fmt(c.stabilityScore,0)+' · '+fmt(c.stabilityAgreement,0)+'%':'—'}</b></div><div class="metric"><span>RSI</span><b>${fmt(d.rsi,1)}</b></div><div class="metric"><span>5g / 20g</span><b>${fmt(d.ret5,1)}% / ${fmt(d.ret20,1)}%</b></div><div class="metric"><span>Hacim / ort.</span><b>${fmt(d.volumeRatio,2)}x</b></div></div>
++  <div class="candidate ${canTrade?'aplus':''}" style="margin-top:9px"><div class="ch"><div><div class="eyebrow">V19.1 · HAFIZA + TARİH DAYANIKLILIĞI + TEYİT</div><div class="symbol">${esc(c.status||'İŞLEM YOK')}</div><div class="dir">${c.direction&&c.direction!=='YOK'?esc(c.direction)+' · '+esc(c.warrantBias)+' · '+esc(c.timingWindow):'Tek yönlü kurulum yok'}</div></div><div class="cscore">${fmt(c.score||0,0)}<small> birleşik skor</small></div></div><div style="margin-top:5px"><span class="tag tb">Kurulum ${fmt(c.setupScore||0,0)}</span><span class="tag ${canTrade?'tg':'ta'}">Tetik ${fmt(c.triggerScore||0,0)}</span>${candidate?'<span class="tag tr">ŞİMDİ VARANT ALMA</span>':''}${c.stabilitySamples?`<span class="tag ${c.stabilityScore>=70?'tg':c.stabilityScore>=58?'ta':'tr'}">STABİLİTE ${fmt(c.stabilityScore,0)} · ${fmt(c.stabilityAgreement,0)}%</span>`:''}${c.adaptiveSamples?`<span class="tag ${c.adaptivePenalty>0?'tr':'tp'}">${esc(c.adaptiveLabel||'HAFIZA')} · ${c.adaptiveSamples} işlem · ${fmt(c.adaptiveSuccess,0)}%</span>`:''}</div>${signalEvidence(c)}<div class="lock" style="margin-top:8px"><b>NİHAİ KARAR:</b> ${esc(c.finalAction||c.status||'İŞLEM YOK')}${c.adaptivePenalty>0?` · hafıza filtresi +${fmt(c.adaptivePenalty,1)}`:''}</div>${(c.confirmationsNeeded||[]).slice(0,4).map(x=>`<div class="warning">Teyit bekliyor: ${esc(x)}</div>`).join('')}</div>
++  <div class="metrics"><div class="metric"><span>Hareket evresi</span><b>${esc(d.phase||'—')}</b></div><div class="metric"><span>Ana trend</span><b>${esc(d.longTrend||'—')}</b></div><div class="metric"><span>Alt motor kararı</span><b>${esc(d.newPosition||'—')}</b></div><div class="metric"><span>5–20g görünüm</span><b>${esc(d.tacticalView||d.direction)}</b></div><div class="metric"><span>Yön kalitesi</span><b>${scoreText(c.dailyQuality,0)}</b></div><div class="metric"><span>Dönüş gücü</span><b>${fmt(d.reversalScore,0)}</b></div><div class="metric"><span>Aşırılaşma</span><b>${fmt(d.extensionRisk,0)}</b></div><div class="metric"><span>Bozulma riski</span><b>${fmt(d.breakdownRisk,0)}</b></div><div class="metric"><span>Trend gücü</span><b>${fmt(d.trendStrength,0)}</b></div><div class="metric"><span>Tarih stabilitesi</span><b>${c.stabilitySamples?fmt(c.stabilityScore,0)+' · '+fmt(c.stabilityAgreement,0)+'%':'—'}</b></div><div class="metric"><span>RSI</span><b>${fmt(d.rsi,1)}</b></div><div class="metric"><span>5g / 20g</span><b>${fmt(d.ret5,1)}% / ${fmt(d.ret20,1)}%</b></div><div class="metric"><span>Hacim / ort.</span><b>${fmt(d.volumeRatio,2)}x</b></div></div>
+   <div class="sectionTitle"><b>Neden böyle dedi?</b><span>yalnız o günün bilgisi</span></div>${(c.reasons||[]).map(x=>`<div class="reason">${esc(x)}</div>`).join('')}${r.slice(0,5).map(x=>`<div class="reason">${esc(x)}</div>`).join('')}${w.map(x=>`<div class="warning">⚠ ${esc(x)}</div>`).join('')}
+   <div class="card" style="box-shadow:none;margin-top:10px"><b class="small">Geleceği açınca V19 önce 1–5 günlük teyit zincirini ve tarih dayanıklılığını kontrol eder. Gerçek işlem yalnız TEMİZ İŞLEM oluştuysa puanlanır.</b><div class="grid2" style="margin-top:8px"><div><label>Kontrol ufku</label><select id="verifyHorizon" class="field"><option value="5">5 işlem günü</option><option value="10">10 işlem günü</option><option value="20" selected>20 işlem günü</option><option value="40">40 işlem günü</option></select></div><div style="display:flex;align-items:end"><button class="btn blue full" onclick="analyzeAfter()">🔭 SONRASINI ANALİZ ET</button></div></div></div>`;
+ }
+@@ -125,22 +132,22 @@
+   const verdict=opened?s.tradeVerdict:s.candidateVerdict;
+   const score=opened?s.tradeScore:0;
+   const entryLine=opened?`Gerçek giriş: ${esc(s.tradeEntryDate||'—')} · referans ${fmt(s.tradeEntryPrice,2)}`:`Pozisyon açılmadı · ${esc(s.confirmationStatus||'—')}`;
+-  $('#futureResult').innerHTML=`<section class="card ${verdictClass(verdict)}"><div class="ch"><div><div class="eyebrow">V19 · SONRASI ANALİZ EDİLDİ</div><div class="symbol">${esc(d.symbol)} · ${esc(d.effectiveDate)}</div><div class="dir">${entryLine}</div></div><div class="cscore">${opened?fmt(score,0):'—'}<small>${esc(verdict||'—')}</small></div></div><div class="decisionGrid"><div class="decisionBox"><span>Başlangıç kurulumu</span><b>${esc(s.initialStage||'—')}</b></div><div class="decisionBox"><span>1–5g teyit</span><b>${esc(s.confirmationStatus||'—')}</b></div><div class="decisionBox ${opened?'good':'warn'}"><span>Gerçek işlem</span><b>${opened?'AÇILDI':'AÇILMADI'}</b></div></div>${opened?`<div class="lock" style="margin-top:8px"><b>${esc(s.candidateDirection)} · ${esc(s.warrantBias)}</b> yönünde temiz tetik oluştu; bundan sonraki sonuç gerçek işlem olarak puanlandı.</div>`:`<div class="lock" style="margin-top:8px">Teyit gelmeden varant alınmış sayılmadı. Aday yanlış olsa bile gerçek işlem hatası yazılmaz.</div>`}<div class="kpis" style="margin-top:8px">${ws.map(w=>`<div class="kpi"><span>${w.days}g yönsel</span><b>${fmt(w.returnPct,1)}%</b></div>`).join('')}</div><div class="metrics"><div class="metric"><span>Seçilen ufuk</span><b>${chosen.days||'—'} gün</b></div><div class="metric"><span>En iyi yönsel</span><b>${fmt(chosen.bestPct,1)}%</b></div><div class="metric"><span>En kötü ters</span><b>${fmt(chosen.worstPct,1)}%</b></div><div class="metric"><span>Hata türü</span><b>${esc(s.errorType||'—')}</b></div></div><div class="reason"><b>${esc(s.summary||'')}</b></div>${(s.lessons||[]).map(x=>`<div class="reason">${esc(x)}</div>`).join('')}<div class="lock" style="margin-top:8px">${esc(d.method||'')}</div></section>`;
++  $('#futureResult').innerHTML=`<section class="card ${verdictClass(verdict)}"><div class="ch"><div><div class="eyebrow">V19.1 · SONRASI ANALİZ EDİLDİ</div><div class="symbol">${esc(d.symbol)} · ${esc(d.effectiveDate)}</div><div class="dir">${entryLine}</div></div><div class="cscore">${opened?fmt(score,0):'—'}<small>${esc(verdict||'—')}</small></div></div><div class="decisionGrid"><div class="decisionBox"><span>Başlangıç kurulumu</span><b>${esc(s.initialStage||'—')}</b></div><div class="decisionBox"><span>1–5g teyit</span><b>${esc(s.confirmationStatus||'—')}</b></div><div class="decisionBox ${opened?'good':'warn'}"><span>Gerçek işlem</span><b>${opened?'AÇILDI':'AÇILMADI'}</b></div></div>${opened?`<div class="lock" style="margin-top:8px"><b>${esc(s.candidateDirection)} · ${esc(s.warrantBias)}</b> yönünde temiz tetik oluştu; bundan sonraki sonuç gerçek işlem olarak puanlandı.</div>`:`<div class="lock" style="margin-top:8px">Teyit gelmeden varant alınmış sayılmadı. Aday yanlış olsa bile gerçek işlem hatası yazılmaz.</div>`}<div class="kpis" style="margin-top:8px">${ws.map(w=>`<div class="kpi"><span>${w.days}g yönsel</span><b>${fmt(w.returnPct,1)}%</b></div>`).join('')}</div><div class="metrics"><div class="metric"><span>Seçilen ufuk</span><b>${chosen.days||'—'} gün</b></div><div class="metric"><span>En iyi yönsel</span><b>${fmt(chosen.bestPct,1)}%</b></div><div class="metric"><span>En kötü ters</span><b>${fmt(chosen.worstPct,1)}%</b></div><div class="metric"><span>Hata türü</span><b>${esc(s.errorType||'—')}</b></div></div><div class="reason"><b>${esc(s.summary||'')}</b></div>${(s.lessons||[]).map(x=>`<div class="reason">${esc(x)}</div>`).join('')}<div class="lock" style="margin-top:8px">${esc(d.method||'')}</div></section>`;
+   saveOutcome(d);renderAutoTests();
+ }
+ function saveOutcome(d){
+-  const s=d.strategyEvaluation||{},dec=d.decision||{},c=dec.cleanSetup||{};let a=store('hl_auto_tests_v18');
+-  const key=`v18|${d.symbol}|${d.effectiveDate}|${s.requestedHorizon}`;
++  const s=d.strategyEvaluation||{},dec=d.decision||{},c=dec.cleanSetup||{};let a=store('hl_auto_tests_v19.1');
++  const key=`v19.1|${d.symbol}|${d.effectiveDate}|${s.requestedHorizon}`;
+   const row={key,version:18,symbol:d.symbol,date:d.effectiveDate,horizon:s.requestedHorizon,initialStage:s.initialStage,direction:s.candidateDirection,bias:s.warrantBias,confirmationStatus:s.confirmationStatus,confirmationDate:s.confirmationDate,confirmationBars:s.confirmationBars,tradeOpened:!!s.tradeOpened,tradeVerdict:s.tradeVerdict,tradeScore:s.tradeScore,candidateVerdict:s.candidateVerdict,errorType:s.errorType,setupScore:s.setupScore,triggerScore:s.triggerScore,windows:s.windows||[],phase:dec.phase,longTrend:dec.longTrend,loggedAt:new Date().toLocaleString('tr-TR')};
+-  a=a.filter(x=>x.key!==key);a.unshift(row);save('hl_auto_tests_v18',a.slice(0,1000));
++  a=a.filter(x=>x.key!==key);a.unshift(row);save('hl_auto_tests_v19.1',a.slice(0,1000));
+ }
+ function renderAutoTests(){
+-  const a=store('hl_auto_tests_v18'),v=a.filter(x=>x.version===18),tr=v.filter(x=>x.tradeOpened),ok=tr.filter(x=>x.tradeVerdict==='DOĞRU').length,partial=tr.filter(x=>x.tradeVerdict==='KISMEN').length,bad=tr.filter(x=>x.tradeVerdict==='YANLIŞ').length,miss=v.filter(x=>x.candidateVerdict==='FIRSAT KAÇTI').length,cancel=v.filter(x=>!x.tradeOpened&&x.initialStage!=='İŞLEM YOK').length,weighted=tr.length?(ok+partial*.5)*100/tr.length:0;
++  const a=store('hl_auto_tests_v19.1'),v=a.filter(x=>x.version===18),tr=v.filter(x=>x.tradeOpened),ok=tr.filter(x=>x.tradeVerdict==='DOĞRU').length,partial=tr.filter(x=>x.tradeVerdict==='KISMEN').length,bad=tr.filter(x=>x.tradeVerdict==='YANLIŞ').length,miss=v.filter(x=>x.candidateVerdict==='FIRSAT KAÇTI').length,cancel=v.filter(x=>!x.tradeOpened&&x.initialStage!=='İŞLEM YOK').length,weighted=tr.length?(ok+partial*.5)*100/tr.length:0;
+   $('#autoStats').innerHTML=`<div class="kpi"><span>V19 sınavı</span><b>${v.length}</b></div><div class="kpi"><span>Gerçek işlem</span><b>${tr.length}</b></div><div class="kpi"><span>İşlem başarısı</span><b>${tr.length?fmt(weighted,1)+'%':'—'}</b></div><div class="kpi"><span>Fırsat kaçtı</span><b>${miss}</b></div>`;
+   $('#autoWeak').innerHTML=`<div class="reason">Gerçek işlemler: ${ok} doğru · ${partial} kısmen · ${bad} yanlış. Teyitsiz/iptal aday: ${cancel}. Başarı oranına yalnız açılmış TEMİZ İŞLEM girer.</div>`;
+   $('#autoTests').innerHTML=v.length?v.map((x,i)=>{const w=(x.windows||[]).find(z=>z.days===x.horizon)||(x.windows||[]).slice(-1)[0]||{},vv=x.tradeOpened?x.tradeVerdict:x.candidateVerdict;return `<div class="candidate"><div class="ch"><div><div class="symbol">${esc(x.symbol)} · ${esc(x.date)}</div><div class="dir">${esc(x.initialStage)} → ${esc(x.confirmationStatus)} · ${esc(x.direction||'—')} ${esc(x.bias||'')}</div></div><span class="tag ${vv==='DOĞRU'||vv==='ADAY İPTALİ KORUDU'?'tg':vv==='YANLIŞ'||vv==='FIRSAT KAÇTI'?'tr':'ta'}">${esc(vv||'—')}</span></div><div class="small muted" style="margin-top:6px">${x.tradeOpened?'GERÇEK İŞLEM':'İŞLEM AÇILMADI'} · sonuç ${fmt(w.returnPct,1)}% · en iyi ${fmt(w.bestPct,1)}% · en kötü ${fmt(w.worstPct,1)}% · ${esc(x.errorType||'YOK')}</div><button class="btn ghost sm" style="margin-top:7px" onclick="removeAutoTestKey('${esc(x.key)}')">SİL</button></div>`}).join(''):'<div class="empty">Henüz V19 otomatik testi yok. Geçmişe Git → Sonrasını Analiz Et.</div>';
+ }
+-function removeAutoTestKey(k){let a=store('hl_auto_tests_v18').filter(x=>x.key!==k);save('hl_auto_tests_v18',a);renderAutoTests()}
++function removeAutoTestKey(k){let a=store('hl_auto_tests_v19.1').filter(x=>x.key!==k);save('hl_auto_tests_v19.1',a);renderAutoTests()}
+ function renderDecisionAudit(d){
+   const ps=d.perSymbol||[],miss=d.misses||[],errs=d.errorBreakdown||{};
+   const errRows=Object.entries(errs).sort((a,b)=>b[1]-a[1]);
+--- a/app/src/main/java/com/varantmatik/app/AnalysisCore.kt
++++ b/app/src/main/java/com/varantmatik/app/AnalysisCore.kt
+@@ -171,6 +171,8 @@
+     val consecutiveAgreement: Int = 0
+ )
+ 
++internal data class ConfirmationCheck(val label: String, val value: String, val passed: Boolean)
++
+ internal data class CleanSetup(
+     val direction: String,
+     val warrantBias: String,
+@@ -195,7 +197,9 @@
+     val stabilityScore: Double? = null,
+     val stabilityAgreement: Double? = null,
+     val stabilitySamples: Int = 0,
+-    val stabilityLabel: String = "ÖLÇÜLMEDİ"
++    val stabilityLabel: String = "ÖLÇÜLMEDİ",
++    val stabilityConsecutive: Int = 0,
++    val confirmationChecks: List<ConfirmationCheck> = emptyList()
+ )
+ 
+ internal data class TradeWindow(
+@@ -1428,8 +1432,12 @@
+             if (activeStability.agreementPct < 65.0) stabilityVetoes += "Yön uyumu en az %65 olmalı"
+             if (activeStability.consecutiveAgreement < 2) stabilityVetoes += "Son iki kapanış aynı yönde olmalı"
+         }
+-        if (setupScore < cleanSetupMin || triggerScore < cleanTriggerMin || combined < cleanCombinedMin)
+-            stabilityVetoes += "Temiz işlem için kurulum, tetik ve birleşik skor eşikleri tamamlanmalı"
++        if (setupScore < cleanSetupMin)
++            stabilityVetoes += "Kurulum ${fmt1(setupScore)}; gereken en az ${fmt1(cleanSetupMin)}"
++        if (triggerScore < cleanTriggerMin)
++            stabilityVetoes += "Tetik ${fmt1(triggerScore)}; gereken en az ${fmt1(cleanTriggerMin)}"
++        if (combined < cleanCombinedMin)
++            stabilityVetoes += "Birleşik skor ${fmt1(combined)}; gereken en az ${fmt1(cleanCombinedMin)}"
+         val status = when {
+             structuralReady && triggerReady && stabilityClean && setupScore >= cleanSetupMin && triggerScore >= cleanTriggerMin && combined >= cleanCombinedMin -> "TEMİZ İŞLEM"
+             structuralReady && triggerReady && earlyReady -> "ERKEN UYARI"
+@@ -1480,7 +1488,19 @@
+             stabilityScore = activeStability?.score,
+             stabilityAgreement = activeStability?.agreementPct,
+             stabilitySamples = activeStability?.samples ?: 0,
+-            stabilityLabel = activeStability?.label ?: "ÖLÇÜLMEDİ"
++            stabilityLabel = activeStability?.label ?: "ÖLÇÜLMEDİ",
++            stabilityConsecutive = activeStability?.consecutiveAgreement ?: 0,
++            confirmationChecks = listOf(
++                ConfirmationCheck("Ana yapı", if (structuralReady) "Uygun" else "Engel var", structuralReady),
++                ConfirmationCheck("Giriş koşulları", if (triggerReady) "Tamam" else "Teyit eksik", triggerReady),
++                ConfirmationCheck("Kurulum", "${fmt1(setupScore)} / en az ${fmt1(cleanSetupMin)}", setupScore >= cleanSetupMin),
++                ConfirmationCheck("Tetik", "${fmt1(triggerScore)} / en az ${fmt1(cleanTriggerMin)}", triggerScore >= cleanTriggerMin),
++                ConfirmationCheck("Birleşik skor", "${fmt1(combined)} / en az ${fmt1(cleanCombinedMin)}", combined >= cleanCombinedMin),
++                ConfirmationCheck("Stabilite", "${activeStability?.score?.takeIf { it.isFinite() }?.let(::fmt1) ?: "—"} / en az 68", activeStability?.score?.let { it.isFinite() && it >= 68.0 } == true),
++                ConfirmationCheck("Yön uyumu", "${activeStability?.agreementPct?.takeIf { it.isFinite() }?.let(::fmt1) ?: "—"}% / en az %65", activeStability?.agreementPct?.let { it.isFinite() && it >= 65.0 } == true),
++                ConfirmationCheck("Günlük gözlem", "${activeStability?.samples ?: 0} / en az 5", stabilityAvailable),
++                ConfirmationCheck("Ardışık aynı yön", "${activeStability?.consecutiveAgreement ?: 0} kapanış / en az 2", (activeStability?.consecutiveAgreement ?: 0) >= 2)
++            )
+         )
+     }
+ 
+--- a/app/src/main/java/com/varantmatik/app/MainActivity.kt
++++ b/app/src/main/java/com/varantmatik/app/MainActivity.kt
+@@ -39,7 +39,7 @@
+             domStorageEnabled = true
+             cacheMode = WebSettings.LOAD_DEFAULT
+             mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
+-            userAgentString = userAgentString + " HisseLab/18"
++            userAgentString = userAgentString + " HisseLab/" + BuildConfig.VERSION_NAME
+         }
+         // HisseLab is stock-decision focused. Disable any legacy warrant alarm that may persist after update.
+         getSharedPreferences(AlarmContract.PREFS, MODE_PRIVATE).edit().putBoolean("enabled", false).apply()
+@@ -418,6 +418,7 @@
+                             .put("tacticalView", d.tacticalView)
+                             .put("longTrend", d.longTrend)
+                             .put("entryQuality", d.entryQuality)
++                            .put("dailyQuality", c.dailyQuality)
+                             .put("trendStrength", d.trendStrength)
+                             .put("reversalScore", d.reversalScore)
+                             .put("extensionRisk", d.extensionRisk)
+@@ -439,6 +440,8 @@
+                             .put("adaptivePenalty", c.adaptivePenalty).put("adaptiveLabel", c.adaptiveLabel)
+                             .put("stabilityScore", c.stabilityScore).put("stabilityAgreement", c.stabilityAgreement)
+                             .put("stabilitySamples", c.stabilitySamples).put("stabilityLabel", c.stabilityLabel)
++        .put("stabilityConsecutive", c.stabilityConsecutive)
++        .put("confirmationChecks", confirmationChecksJson(c))
+                             .put("horizon", h)
+                     }
+ 
+@@ -638,6 +641,12 @@
+         .put("reasons", JSONArray(d.reasons)).put("warnings", JSONArray(d.warnings))
+ 
+ 
++    private fun confirmationChecksJson(c: CleanSetup): JSONArray = JSONArray().apply {
++        c.confirmationChecks.forEach { check ->
++            put(JSONObject().put("label", check.label).put("value", check.value).put("passed", check.passed))
++        }
++    }
++
+     private fun cleanSetupJson(c: CleanSetup): JSONObject = JSONObject()
+         .put("direction", c.direction).put("warrantBias", c.warrantBias).put("status", c.status)
+         .put("score", c.score).put("hardGate", c.hardGate).put("dailyQuality", c.dailyQuality)
+@@ -648,6 +657,8 @@
+         .put("adaptivePenalty", c.adaptivePenalty).put("adaptiveLabel", c.adaptiveLabel)
+         .put("stabilityScore", c.stabilityScore).put("stabilityAgreement", c.stabilityAgreement)
+         .put("stabilitySamples", c.stabilitySamples).put("stabilityLabel", c.stabilityLabel)
++        .put("stabilityConsecutive", c.stabilityConsecutive)
++        .put("confirmationChecks", confirmationChecksJson(c))
+         .put("reasons", JSONArray(c.reasons)).put("vetoes", JSONArray(c.vetoes))
+         .put("confirmationsNeeded", JSONArray(c.confirmationsNeeded))
+ 
+--- a/app/src/test/java/com/varantmatik/app/AnalysisCoreTest.kt
++++ b/app/src/test/java/com/varantmatik/app/AnalysisCoreTest.kt
+@@ -463,10 +463,15 @@
+ 
+     @Test fun v19CleanThresholdRequiresTwoConsecutiveCloses() {
+         val d = v19StrongDecision()
+-        assertEquals("TEMİZ İŞLEM", AnalysisCore.cleanSetup(d, stability = v19Stability(68.0, 65.0)).status)
++        val clean = AnalysisCore.cleanSetup(d, stability = v19Stability(68.0, 65.0))
++        assertEquals("TEMİZ İŞLEM", clean.status)
++        assertEquals(9, clean.confirmationChecks.size)
++        assertTrue(clean.confirmationChecks.all { it.passed })
++        assertEquals(2, clean.stabilityConsecutive)
+         val intermittent = AnalysisCore.cleanSetup(d, stability = v19Stability(80.0, 80.0, consecutive = 1))
+         assertEquals("ERKEN UYARI", intermittent.status)
+         assertFalse(intermittent.hardGate)
++        assertFalse(intermittent.confirmationChecks.single { it.label == "Ardışık aynı yön" }.passed)
+         assertTrue(intermittent.confirmationsNeeded.any { it.contains("Son iki") })
+         assertFalse(AnalysisCore.cleanSetup(d, stability = v19Stability(80.0, 64.999)).hardGate)
+     }

@@ -1,4 +1,4 @@
-name: Build HisseLab V19 APK
+name: Build HisseLab V19.1 APK
 
 on:
   workflow_dispatch:
@@ -115,8 +115,9 @@ jobs:
           patch -p1 < ../../v18.patch
           patch -p1 < ../../v18_hotfix.patch
           patch -p1 < ../../v19_confirmation.patch
-          grep -q 'versionName = "19.0"' app/build.gradle.kts
-          grep -q 'versionCode = 19' app/build.gradle.kts
+          patch -p1 < ../../v19_1_explanation.patch
+          grep -q 'versionName = "19.1"' app/build.gradle.kts
+          grep -q 'versionCode = 20' app/build.gradle.kts
 
       - name: V19 kapanis teyidi ve walk-forward regresyon testleri
         working-directory: .ci_build/HisseLab_V9_Master
@@ -135,16 +136,16 @@ jobs:
         shell: bash
         run: |
           rm -f hisselab-stable.jks
-          tar -czf ../../HisseLab_V19_Source.tar.gz .
+          tar -czf ../../HisseLab_V19_1_Source.tar.gz .
 
       - uses: actions/upload-artifact@v4
         with:
-          name: HisseLab-V19-stable-apk
+          name: HisseLab-V19.1-stable-apk
           path: .ci_build/HisseLab_V9_Master/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
 
       - uses: actions/upload-artifact@v4
         with:
-          name: HisseLab-V19-source
-          path: HisseLab_V19_Source.tar.gz
+          name: HisseLab-V19.1-source
+          path: HisseLab_V19_1_Source.tar.gz
           if-no-files-found: error

@@ -13,3 +13,13 @@
 Kotlin 2.0.21 ve JUnit 4.13.2 ile 41 çekirdek testi geçti. Sınır değerler, eksik veri, kesintili yön, seans kapanışı ve erken adayın gerçek teyidi kapsanır. Arayüz JavaScript sözdizimi kontrol edildi. APK derlemesi mevcut GitHub Actions akışındaki Android test kapısından geçer.
 
 Gerçek piyasa verisinde eski/yeni/önerilen eşiklerin karşılaştırmalı getirisi henüz ölçülmedi. Bu değişiklik daha seçici davranış uygular; daha yüksek kârlılık iddiası içermez.
+
+## V19.1 — Açıklanabilir sinyal kartları
+
+- Sürüm başlığı düzeltildi; 19.1 (Android versionCode 20).
+- PUT ve CALL kartında yön için hesaplanan günlük kalite gösterilir.
+- Risk puanının yüksek olmasının daha uygun koşulları ifade ettiği açıklandı.
+- Stabilite, uyum, gözlem sayısı ve ardışık aynı yön kapanışları görünür.
+- Dokuz temiz sinyal koşulu, gerçek motor eşikleri ve mevcut değerlerle ayrıntılarda gösterilir. Bekleme nedenleri tek tek açıklanır.
+- Geçmiş tarih ekranı da aynı açıklamaları kullanır. Sinyal eşikleri ve işlem kuralları değiştirilmedi.
+- 41 çekirdek testi ve kart oluşturma kontrolleri; Android derlemesi CI üzerinden doğrulanır.
