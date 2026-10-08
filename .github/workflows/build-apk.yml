@@ -1,4 +1,4 @@
-name: Build HisseLab V18 APK
+name: Build HisseLab V19 APK
 
 on:
   workflow_dispatch:
@@ -30,7 +30,7 @@ jobs:
         with:
           gradle-version: '8.9'
 
-      - name: V17 tabanini yeniden kur ve V18 motorunu uygula
+      - name: Tabani yeniden kur ve V19 kapanis teyidini uygula
         shell: bash
         run: |
           rm -rf .ci_build source.* v10.patch* v11.patch* v12.patch* v13.patch* v14.patch* v15.patch* v16.patch* v17.patch* v18.patch*
@@ -114,10 +114,11 @@ jobs:
           cd .ci_build/HisseLab_V9_Master
           patch -p1 < ../../v18.patch
           patch -p1 < ../../v18_hotfix.patch
-          grep -q 'versionName = "18.0"' app/build.gradle.kts
-          grep -q 'versionCode = 18' app/build.gradle.kts
+          patch -p1 < ../../v19_confirmation.patch
+          grep -q 'versionName = "19.0"' app/build.gradle.kts
+          grep -q 'versionCode = 19' app/build.gradle.kts
 
-      - name: V18 temporal stability ve walk-forward regresyon testleri
+      - name: V19 kapanis teyidi ve walk-forward regresyon testleri
         working-directory: .ci_build/HisseLab_V9_Master
         run: bash tools/run_core_tests.sh
 
@@ -134,16 +135,16 @@ jobs:
         shell: bash
         run: |
           rm -f hisselab-stable.jks
-          tar -czf ../../HisseLab_V18_Source.tar.gz .
+          tar -czf ../../HisseLab_V19_Source.tar.gz .
 
       - uses: actions/upload-artifact@v4
         with:
-          name: HisseLab-V18-stable-apk
+          name: HisseLab-V19-stable-apk
           path: .ci_build/HisseLab_V9_Master/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
 
       - uses: actions/upload-artifact@v4
         with:
-          name: HisseLab-V18-source
-          path: HisseLab_V18_Source.tar.gz
+          name: HisseLab-V19-source
+          path: HisseLab_V19_Source.tar.gz
           if-no-files-found: error

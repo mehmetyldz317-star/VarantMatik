@@ -1,0 +1,583 @@
+--- a/app/build.gradle.kts
++++ b/app/build.gradle.kts
+@@ -11,8 +11,8 @@
+         applicationId = "com.varantmatik.app"
+         minSdk = 26
+         targetSdk = 35
+-        versionCode = 18
+-        versionName = "18.0"
++        versionCode = 19
++        versionName = "19.0"
+     }
+ 
+     signingConfigs {
+--- a/app/src/main/assets/index.html
++++ b/app/src/main/assets/index.html
+@@ -9,10 +9,10 @@
+ <header class="top"><div class="brand"><div class="logo">HL</div><div><h1>HisseLab</h1><div class="sub">v18 · stabilite + teyit + temiz işlem → varant seçici</div></div></div><div class="live"><i></i><span>veri motoru</span></div></header>
+ 
+ <main id="p-home" class="page on">
+-<section class="hero"><div class="eyebrow">TEMİZ POZİSYON AVCISI</div><h2>Her gün işlem değil.<br>Yalnız temiz fırsat.</h2><p>Önce fırsat kurulumu bulunur, sonra 1–5 günlük teyit aranır. <b>Varant yalnız TEMİZ İŞLEM oluşunca</b> açılır. Hiçbir aday yeterince temiz değilse sonuç İŞLEM YOK olur.</p><div class="row"><button class="btn primary" onclick="scanToday()">⚡ TEMİZ İŞLEM TARA</button></div></section>
++<section class="hero"><div class="eyebrow">TEMİZ POZİSYON AVCISI</div><h2>Her gün işlem değil.<br>Yalnız temiz fırsat.</h2><p>Erken uyarı ayrı gösterilir; temiz sinyal için son iki kapanışta aynı yön ve yeterli geçmiş aranır. Analiz tamamlanmış günlük mumlarla yapılır. <b>Varant yalnız TEMİZ İŞLEM oluşunca</b> açılır. Hiçbir aday yeterince temiz değilse sonuç İŞLEM YOK olur.</p><div class="row"><button class="btn primary" onclick="scanToday()">⚡ TEMİZ İŞLEM TARA</button></div></section>
+ <div id="scanStats" class="kpis" style="margin-top:10px"></div>
+ <div class="sectionTitle"><b>Temiz işlemler</b><span id="oppUpdated">henüz taranmadı</span></div><div id="opportunities" class="empty">Hisse evrenini taramak için butona bas.</div>
+-<div class="sectionTitle"><b>Teyit bekleyenler</b><span>işlem değil · varant alma</span></div><div id="waitingOpportunities" class="empty">Tarama sonrası teyit bekleyen adaylar burada görünür.</div>
++<div class="sectionTitle"><b>Erken uyarı ve teyit bekleyenler</b><span>işlem değil · varant alma</span></div><div id="waitingOpportunities" class="empty">Tarama sonrası teyit bekleyen adaylar burada görünür.</div>
+ <div class="sectionTitle"><b>Fırsat oluşuyor</b><span>erken kurulum · yalnız izle</span></div><div id="developingOpportunities" class="empty">Ana yapı uygun ama giriş tetikleyicisi henüz oluşmamış adaylar burada görünür.</div>
+ <div id="warrantPanel"></div>
+ </main>
+@@ -26,10 +26,10 @@
+ </main>
+ 
+ <main id="p-test" class="page">
+-<section class="card"><h3 style="margin-top:0">🧪 Test Merkezi</h3><p class="small muted">V18 yalnız gerçekten açılmış TEMİZ İŞLEM zincirlerini başarı oranına katar. Tarih dayanıklılığı zayıf tek günlük sinyaller teyit bekler; iptal adaylar ve kaçan fırsatlar ayrı tutulur.</p><div id="autoStats" class="kpis"></div><div id="autoWeak"></div></section>
++<section class="card"><h3 style="margin-top:0">🧪 Test Merkezi</h3><p class="small muted">V19 yalnız gerçekten açılmış TEMİZ İŞLEM zincirlerini başarı oranına katar. Tarih dayanıklılığı zayıf tek günlük sinyaller teyit bekler; iptal adaylar ve kaçan fırsatlar ayrı tutulur.</p><div id="autoStats" class="kpis"></div><div id="autoWeak"></div></section>
+ <div class="sectionTitle"><b>Otomatik doğrulanan testler</b><span>karar + gelecek fiyat yolu</span></div><div id="autoTests"></div>
+ 
+-<section class="card"><h3 style="margin-top:0">Toplu Geçmiş Sınavı</h3><p class="small muted">Birden fazla hisseyi farklı geçmiş tarihlerde otomatik sınar. Her tarihte önce V18 kurulumu ve yalnız geçmişe bakan tarih dayanıklılığı kilitlenir; ardından 1–5 günlük teyit zinciri ve gerçek işlem sonucu sınanır.</p>
++<section class="card"><h3 style="margin-top:0">Toplu Geçmiş Sınavı</h3><p class="small muted">Birden fazla hisseyi farklı geçmiş tarihlerde otomatik sınar. Her tarihte önce V19 kurulumu ve yalnız geçmişe bakan tarih dayanıklılığı kilitlenir; ardından 1–5 günlük teyit zinciri ve gerçek işlem sonucu sınanır.</p>
+ <div><label>Hisseler (virgülle)</label><input id="auditSymbols" class="field" value="ASELS,GARAN,THYAO,TUPRS,SAHOL,FROTO"></div>
+ <div class="grid3" style="margin-top:8px"><div><label>Dönem</label><select id="auditYears" class="field"><option value="1">1 yıl</option><option value="2" selected>2 yıl</option><option value="3">3 yıl</option><option value="5">5 yıl</option></select></div><div><label>Örnek aralığı</label><select id="auditStep" class="field"><option value="10">10 bar</option><option value="20" selected>20 bar</option><option value="40">40 bar</option></select></div><div><label>Kontrol ufku</label><select id="auditHorizon" class="field"><option value="10">10 gün</option><option value="20" selected>20 gün</option><option value="40">40 gün</option></select></div></div>
+ <button class="btn blue full" style="margin-top:8px" onclick="runDecisionAudit()">🧠 TOPLU SINAVI BAŞLAT</button></section>
+@@ -69,27 +69,27 @@
+ function renderOpportunities(d){
+   const c=d.candidates||[],w=d.waiting||[],f=d.developing||[];
+   $('#oppUpdated').textContent=d.updated||'—';
+-  $('#scanStats').innerHTML=`<div class="kpi"><span>Taranan</span><b>${d.analyzedCount||0}</b></div><div class="kpi"><span>Temiz işlem</span><b>${d.cleanCount||0}</b></div><div class="kpi"><span>Teyit / Fırsat</span><b>${(d.waitingCount||0)} / ${(d.developingCount||0)}</b></div><div class="kpi"><span>Elendi</span><b>${d.rejectedCount||0}</b></div>`;
++  $('#scanStats').innerHTML=`<div class="kpi"><span>Taranan</span><b>${d.analyzedCount||0}</b></div><div class="kpi"><span>Temiz işlem</span><b>${d.cleanCount||0}</b></div><div class="kpi"><span>Bekleyen / Fırsat</span><b>${(d.waitingCount||0)} / ${(d.developingCount||0)}</b></div><div class="kpi"><span>Elendi</span><b>${d.rejectedCount||0}</b></div>`;
+   if(!c.length){
+     $('#opportunities').className='empty';
+     $('#opportunities').innerHTML='<b>ŞU AN TEMİZ İŞLEM YOK.</b><br>Bu, programın işlem üretmek için zorlamadığı anlamına gelir.';
+   }else{
+     $('#opportunities').className='';
+-    $('#opportunities').innerHTML=c.map(x=>`<div class="candidate aplus"><div class="ch"><div><div class="symbol">${esc(x.symbol)}</div><div class="dir">${x.direction==='YUKARI'?'↑ YUKARI · CALL':'↓ AŞAĞI · PUT'} · ${esc(x.timingWindow||'0–3 işlem günü')}</div></div><div class="cscore">${fmt(x.setupScore,0)}<small> temiz skor</small></div></div><span class="tag tg">TEMİZ İŞLEM</span><span class="tag tb">${esc(x.phase||'—')}</span><span class="tag tp">Kurulum ${fmt(x.opportunityScore,0)}</span><span class="tag tg">Tetik ${fmt(x.triggerScore,0)}</span>${x.adaptiveSamples?`<span class="tag ${x.adaptivePenalty>0?'tr':'tb'}">Hafıza ${x.adaptiveSamples} · ${fmt(x.adaptiveSuccess,0)}%</span>`:''}<div class="metrics"><div class="metric"><span>Giriş</span><b>${fmt(x.entryQuality,0)}</b></div><div class="metric"><span>Trend</span><b>${fmt(x.trendStrength,0)}</b></div><div class="metric"><span>Piyasa</span><b>${fmt(x.marketScore,0)}</b></div><div class="metric"><span>4s teyit</span><b>${x.fourHour&&x.fourHour.available?fmt(x.fourHour.score,0):'—'}</b></div></div><div class="lock" style="margin-top:8px"><b>NİHAİ:</b> ${esc(x.finalAction||'TEMİZ İŞLEM')}</div><div class="row" style="margin-top:8px"><button class="btn blue sm" onclick="findWarrants('${esc(x.symbol)}','${esc(x.warrantBias)}',${x.horizon||20})">VARANTLARI BUL</button><button class="btn ghost sm" onclick="sendPast('${esc(x.symbol)}')">GEÇMİŞTE SINA</button><button class="btn ghost sm" onclick="quickWatch('${esc(x.symbol)}')">☆ İZLE</button></div></div>`).join('');
++    $('#opportunities').innerHTML=c.map(x=>`<div class="candidate aplus"><div class="ch"><div><div class="symbol">${esc(x.symbol)}</div><div class="tiny muted">Kapanış: ${esc(x.signalDate||'—')}</div><div class="dir">${x.direction==='YUKARI'?'↑ YUKARI · CALL':'↓ AŞAĞI · PUT'} · ${esc(x.timingWindow||'0–3 işlem günü')}</div></div><div class="cscore">${fmt(x.setupScore,0)}<small> temiz skor</small></div></div><span class="tag tg">TEMİZ İŞLEM</span><span class="tag tb">${esc(x.phase||'—')}</span><span class="tag tp">Kurulum ${fmt(x.opportunityScore,0)}</span><span class="tag tg">Tetik ${fmt(x.triggerScore,0)}</span>${x.adaptiveSamples?`<span class="tag ${x.adaptivePenalty>0?'tr':'tb'}">Hafıza ${x.adaptiveSamples} · ${fmt(x.adaptiveSuccess,0)}%</span>`:''}<div class="metrics"><div class="metric"><span>Giriş</span><b>${fmt(x.entryQuality,0)}</b></div><div class="metric"><span>Trend</span><b>${fmt(x.trendStrength,0)}</b></div><div class="metric"><span>Piyasa</span><b>${fmt(x.marketScore,0)}</b></div><div class="metric"><span>4s teyit</span><b>${x.fourHour&&x.fourHour.available?fmt(x.fourHour.score,0):'—'}</b></div></div><div class="lock" style="margin-top:8px"><b>NİHAİ:</b> ${esc(x.finalAction||'TEMİZ İŞLEM')}</div><div class="row" style="margin-top:8px"><button class="btn blue sm" onclick="findWarrants('${esc(x.symbol)}','${esc(x.warrantBias)}',${x.horizon||20})">VARANTLARI BUL</button><button class="btn ghost sm" onclick="sendPast('${esc(x.symbol)}')">GEÇMİŞTE SINA</button><button class="btn ghost sm" onclick="quickWatch('${esc(x.symbol)}')">☆ İZLE</button></div></div>`).join('');
+   }
+   if(!w.length){
+     $('#waitingOpportunities').className='empty';
+-    $('#waitingOpportunities').innerHTML='Şu an teyit bekleyen aday yok.';
++    $('#waitingOpportunities').innerHTML='Şu an erken uyarı veya teyit bekleyen aday yok.';
+   }else{
+     $('#waitingOpportunities').className='';
+-    $('#waitingOpportunities').innerHTML=w.map(x=>`<div class="candidate"><div class="ch"><div><div class="symbol">${esc(x.symbol)}</div><div class="dir">${esc(x.direction)} · ${esc(x.warrantBias)} adayı · ${esc(x.timingWindow||'1–5 gün')}</div></div><div class="cscore">${fmt(x.opportunityScore||x.setupScore,0)}<small> kurulum</small></div></div><span class="tag ta">TEYİT BEKLE</span><span class="tag tr">ŞİMDİ VARANT ALMA</span>${x.adaptiveSamples?`<span class="tag ${x.adaptivePenalty>0?'tr':'tb'}">${esc(x.adaptiveLabel||'HAFIZA')} · ${x.adaptiveSamples} işlem</span>`:''}<div class="metrics"><div class="metric"><span>Kurulum</span><b>${fmt(x.opportunityScore,0)}</b></div><div class="metric"><span>Tetik</span><b>${fmt(x.triggerScore,0)}</b></div><div class="metric"><span>Trend</span><b>${fmt(x.trendStrength,0)}</b></div><div class="metric"><span>Risk</span><b>${fmt(x.riskScore,0)}</b></div></div><div class="small muted" style="margin-top:6px">${(x.confirmationsNeeded||x.vetoes||[]).slice(0,3).map(esc).join(' · ')||'Ek teyit bekleniyor'}</div><div class="row" style="margin-top:8px"><button class="btn ghost sm" onclick="sendPast('${esc(x.symbol)}')">GEÇMİŞTE SINA</button><button class="btn ghost sm" onclick="quickWatch('${esc(x.symbol)}')">☆ İZLE</button></div></div>`).join('');
++    $('#waitingOpportunities').innerHTML=w.map(x=>`<div class="candidate"><div class="ch"><div><div class="symbol">${esc(x.symbol)}</div><div class="tiny muted">Kapanış: ${esc(x.signalDate||'—')}</div><div class="dir">${esc(x.direction)} · ${esc(x.warrantBias)} adayı · ${esc(x.timingWindow||'1–5 gün')}</div></div><div class="cscore">${fmt(x.opportunityScore||x.setupScore,0)}<small> kurulum</small></div></div><span class="tag ta">${esc(x.action||'TEYİT BEKLE')}</span><span class="tag tr">ŞİMDİ VARANT ALMA</span>${x.adaptiveSamples?`<span class="tag ${x.adaptivePenalty>0?'tr':'tb'}">${esc(x.adaptiveLabel||'HAFIZA')} · ${x.adaptiveSamples} işlem</span>`:''}<div class="metrics"><div class="metric"><span>Kurulum</span><b>${fmt(x.opportunityScore,0)}</b></div><div class="metric"><span>Tetik</span><b>${fmt(x.triggerScore,0)}</b></div><div class="metric"><span>Trend</span><b>${fmt(x.trendStrength,0)}</b></div><div class="metric"><span>Risk</span><b>${fmt(x.riskScore,0)}</b></div></div><div class="small muted" style="margin-top:6px">${(x.confirmationsNeeded||x.vetoes||[]).slice(0,3).map(esc).join(' · ')||'Ek teyit bekleniyor'}</div><div class="row" style="margin-top:8px"><button class="btn ghost sm" onclick="sendPast('${esc(x.symbol)}')">GEÇMİŞTE SINA</button><button class="btn ghost sm" onclick="quickWatch('${esc(x.symbol)}')">☆ İZLE</button></div></div>`).join('');
+   }
+   if(!f.length){
+     $('#developingOpportunities').className='empty';
+     $('#developingOpportunities').innerHTML='Erken kurulum adayı yok.';
+   }else{
+     $('#developingOpportunities').className='';
+-    $('#developingOpportunities').innerHTML=f.map(x=>`<div class="candidate"><div class="ch"><div><div class="symbol">${esc(x.symbol)}</div><div class="dir">${esc(x.direction)} yönünde erken kurulum · ${esc(x.timingWindow||'izle')}</div></div><div class="cscore">${fmt(x.opportunityScore||0,0)}<small> kurulum</small></div></div><span class="tag tb">FIRSAT OLUŞUYOR</span><span class="tag tr">VARANT YOK</span><div class="small muted" style="margin-top:6px">Tetik ${fmt(x.triggerScore,0)} · ${(x.confirmationsNeeded||x.vetoes||[]).slice(0,2).map(esc).join(' · ')||'Tetikleyici bekleniyor'}</div><div class="row" style="margin-top:8px"><button class="btn ghost sm" onclick="sendPast('${esc(x.symbol)}')">GEÇMİŞTE SINA</button><button class="btn ghost sm" onclick="quickWatch('${esc(x.symbol)}')">☆ İZLE</button></div></div>`).join('');
++    $('#developingOpportunities').innerHTML=f.map(x=>`<div class="candidate"><div class="ch"><div><div class="symbol">${esc(x.symbol)}</div><div class="tiny muted">Kapanış: ${esc(x.signalDate||'—')}</div><div class="dir">${esc(x.direction)} yönünde erken kurulum · ${esc(x.timingWindow||'izle')}</div></div><div class="cscore">${fmt(x.opportunityScore||0,0)}<small> kurulum</small></div></div><span class="tag tb">FIRSAT OLUŞUYOR</span><span class="tag tr">VARANT YOK</span><div class="small muted" style="margin-top:6px">Tetik ${fmt(x.triggerScore,0)} · ${(x.confirmationsNeeded||x.vetoes||[]).slice(0,2).map(esc).join(' · ')||'Tetikleyici bekleniyor'}</div><div class="row" style="margin-top:8px"><button class="btn ghost sm" onclick="sendPast('${esc(x.symbol)}')">GEÇMİŞTE SINA</button><button class="btn ghost sm" onclick="quickWatch('${esc(x.symbol)}')">☆ İZLE</button></div></div>`).join('');
+   }
+ }
+ function findWarrants(symbol,bias,horizon=20){
+@@ -109,14 +109,14 @@
+ function renderHistorical(d){
+   lastHistorical=d;
+   const exact=d.isExactTradingDate,w=d.warnings||[],r=d.reasons||[],c=d.cleanSetup||{};
+-  const canTrade=c.status==='TEMİZ İŞLEM',candidate=c.status==='TEYİT BEKLE'||c.status==='FIRSAT OLUŞUYOR';
++  const canTrade=c.status==='TEMİZ İŞLEM',candidate=['TEYİT BEKLE','ERKEN UYARI','VERİ YETERSİZ','FIRSAT OLUŞUYOR'].includes(c.status);
+   $('#pastResult').className='card';
+   $('#pastResult').innerHTML=`<div class="lock">🔒 <b>GELECEK VERİ KİLİTLİ.</b> Analiz yalnız ${esc(d.effectiveDate)} ve öncesiyle yapıldı. ${d.futureBarsExcluded||0} sonraki bar karar motorundan dışlandı.${exact?'':`<br>Seçtiğin ${esc(d.requestedDate)} işlem günü değildi; ${esc(d.effectiveDate)} kullanıldı.`}</div>
+   <div class="ch" style="margin-top:10px"><div><div class="symbol">${esc(d.symbol)} · ${esc(d.effectiveDate)}</div><div class="dir">Kapanış ${fmt(d.price,2)}</div></div><div class="cscore">${fmt(d.confidence,0)}<small> analiz kalitesi</small></div></div>
+-  <div class="candidate ${canTrade?'aplus':''}" style="margin-top:9px"><div class="ch"><div><div class="eyebrow">V18 · HAFIZA + TARİH DAYANIKLILIĞI + TEYİT</div><div class="symbol">${esc(c.status||'İŞLEM YOK')}</div><div class="dir">${c.direction&&c.direction!=='YOK'?esc(c.direction)+' · '+esc(c.warrantBias)+' · '+esc(c.timingWindow):'Tek yönlü kurulum yok'}</div></div><div class="cscore">${fmt(c.score||0,0)}<small> birleşik skor</small></div></div><div style="margin-top:5px"><span class="tag tb">Kurulum ${fmt(c.setupScore||0,0)}</span><span class="tag ${canTrade?'tg':'ta'}">Tetik ${fmt(c.triggerScore||0,0)}</span>${candidate?'<span class="tag tr">ŞİMDİ VARANT ALMA</span>':''}${c.stabilitySamples?`<span class="tag ${c.stabilityScore>=70?'tg':c.stabilityScore>=58?'ta':'tr'}">STABİLİTE ${fmt(c.stabilityScore,0)} · ${fmt(c.stabilityAgreement,0)}%</span>`:''}${c.adaptiveSamples?`<span class="tag ${c.adaptivePenalty>0?'tr':'tp'}">${esc(c.adaptiveLabel||'HAFIZA')} · ${c.adaptiveSamples} işlem · ${fmt(c.adaptiveSuccess,0)}%</span>`:''}</div><div class="lock" style="margin-top:8px"><b>NİHAİ KARAR:</b> ${esc(c.finalAction||c.status||'İŞLEM YOK')}${c.adaptivePenalty>0?` · hafıza filtresi +${fmt(c.adaptivePenalty,1)}`:''}</div>${(c.confirmationsNeeded||[]).slice(0,4).map(x=>`<div class="warning">Teyit bekliyor: ${esc(x)}</div>`).join('')}</div>
++  <div class="candidate ${canTrade?'aplus':''}" style="margin-top:9px"><div class="ch"><div><div class="eyebrow">V19 · HAFIZA + TARİH DAYANIKLILIĞI + TEYİT</div><div class="symbol">${esc(c.status||'İŞLEM YOK')}</div><div class="dir">${c.direction&&c.direction!=='YOK'?esc(c.direction)+' · '+esc(c.warrantBias)+' · '+esc(c.timingWindow):'Tek yönlü kurulum yok'}</div></div><div class="cscore">${fmt(c.score||0,0)}<small> birleşik skor</small></div></div><div style="margin-top:5px"><span class="tag tb">Kurulum ${fmt(c.setupScore||0,0)}</span><span class="tag ${canTrade?'tg':'ta'}">Tetik ${fmt(c.triggerScore||0,0)}</span>${candidate?'<span class="tag tr">ŞİMDİ VARANT ALMA</span>':''}${c.stabilitySamples?`<span class="tag ${c.stabilityScore>=70?'tg':c.stabilityScore>=58?'ta':'tr'}">STABİLİTE ${fmt(c.stabilityScore,0)} · ${fmt(c.stabilityAgreement,0)}%</span>`:''}${c.adaptiveSamples?`<span class="tag ${c.adaptivePenalty>0?'tr':'tp'}">${esc(c.adaptiveLabel||'HAFIZA')} · ${c.adaptiveSamples} işlem · ${fmt(c.adaptiveSuccess,0)}%</span>`:''}</div><div class="lock" style="margin-top:8px"><b>NİHAİ KARAR:</b> ${esc(c.finalAction||c.status||'İŞLEM YOK')}${c.adaptivePenalty>0?` · hafıza filtresi +${fmt(c.adaptivePenalty,1)}`:''}</div>${(c.confirmationsNeeded||[]).slice(0,4).map(x=>`<div class="warning">Teyit bekliyor: ${esc(x)}</div>`).join('')}</div>
+   <div class="metrics"><div class="metric"><span>Hareket evresi</span><b>${esc(d.phase||'—')}</b></div><div class="metric"><span>Ana trend</span><b>${esc(d.longTrend||'—')}</b></div><div class="metric"><span>Alt motor kararı</span><b>${esc(d.newPosition||'—')}</b></div><div class="metric"><span>5–20g görünüm</span><b>${esc(d.tacticalView||d.direction)}</b></div><div class="metric"><span>Giriş kalitesi</span><b>${fmt(d.entryQuality,0)}</b></div><div class="metric"><span>Dönüş gücü</span><b>${fmt(d.reversalScore,0)}</b></div><div class="metric"><span>Aşırılaşma</span><b>${fmt(d.extensionRisk,0)}</b></div><div class="metric"><span>Bozulma riski</span><b>${fmt(d.breakdownRisk,0)}</b></div><div class="metric"><span>Trend gücü</span><b>${fmt(d.trendStrength,0)}</b></div><div class="metric"><span>Tarih stabilitesi</span><b>${c.stabilitySamples?fmt(c.stabilityScore,0)+' · '+fmt(c.stabilityAgreement,0)+'%':'—'}</b></div><div class="metric"><span>RSI</span><b>${fmt(d.rsi,1)}</b></div><div class="metric"><span>5g / 20g</span><b>${fmt(d.ret5,1)}% / ${fmt(d.ret20,1)}%</b></div><div class="metric"><span>Hacim / ort.</span><b>${fmt(d.volumeRatio,2)}x</b></div></div>
+   <div class="sectionTitle"><b>Neden böyle dedi?</b><span>yalnız o günün bilgisi</span></div>${(c.reasons||[]).map(x=>`<div class="reason">${esc(x)}</div>`).join('')}${r.slice(0,5).map(x=>`<div class="reason">${esc(x)}</div>`).join('')}${w.map(x=>`<div class="warning">⚠ ${esc(x)}</div>`).join('')}
+-  <div class="card" style="box-shadow:none;margin-top:10px"><b class="small">Geleceği açınca V18 önce 1–5 günlük teyit zincirini ve tarih dayanıklılığını kontrol eder. Gerçek işlem yalnız TEMİZ İŞLEM oluştuysa puanlanır.</b><div class="grid2" style="margin-top:8px"><div><label>Kontrol ufku</label><select id="verifyHorizon" class="field"><option value="5">5 işlem günü</option><option value="10">10 işlem günü</option><option value="20" selected>20 işlem günü</option><option value="40">40 işlem günü</option></select></div><div style="display:flex;align-items:end"><button class="btn blue full" onclick="analyzeAfter()">🔭 SONRASINI ANALİZ ET</button></div></div></div>`;
++  <div class="card" style="box-shadow:none;margin-top:10px"><b class="small">Geleceği açınca V19 önce 1–5 günlük teyit zincirini ve tarih dayanıklılığını kontrol eder. Gerçek işlem yalnız TEMİZ İŞLEM oluştuysa puanlanır.</b><div class="grid2" style="margin-top:8px"><div><label>Kontrol ufku</label><select id="verifyHorizon" class="field"><option value="5">5 işlem günü</option><option value="10">10 işlem günü</option><option value="20" selected>20 işlem günü</option><option value="40">40 işlem günü</option></select></div><div style="display:flex;align-items:end"><button class="btn blue full" onclick="analyzeAfter()">🔭 SONRASINI ANALİZ ET</button></div></div></div>`;
+ }
+ function verdictClass(v){return v==='DOĞRU'||v==='ADAY İPTALİ KORUDU'?'resultGood':v==='YANLIŞ'||v==='FIRSAT KAÇTI'?'resultBad':'resultPartial'}
+ function renderOutcome(d){
+@@ -125,7 +125,7 @@
+   const verdict=opened?s.tradeVerdict:s.candidateVerdict;
+   const score=opened?s.tradeScore:0;
+   const entryLine=opened?`Gerçek giriş: ${esc(s.tradeEntryDate||'—')} · referans ${fmt(s.tradeEntryPrice,2)}`:`Pozisyon açılmadı · ${esc(s.confirmationStatus||'—')}`;
+-  $('#futureResult').innerHTML=`<section class="card ${verdictClass(verdict)}"><div class="ch"><div><div class="eyebrow">V18 · SONRASI ANALİZ EDİLDİ</div><div class="symbol">${esc(d.symbol)} · ${esc(d.effectiveDate)}</div><div class="dir">${entryLine}</div></div><div class="cscore">${opened?fmt(score,0):'—'}<small>${esc(verdict||'—')}</small></div></div><div class="decisionGrid"><div class="decisionBox"><span>Başlangıç kurulumu</span><b>${esc(s.initialStage||'—')}</b></div><div class="decisionBox"><span>1–5g teyit</span><b>${esc(s.confirmationStatus||'—')}</b></div><div class="decisionBox ${opened?'good':'warn'}"><span>Gerçek işlem</span><b>${opened?'AÇILDI':'AÇILMADI'}</b></div></div>${opened?`<div class="lock" style="margin-top:8px"><b>${esc(s.candidateDirection)} · ${esc(s.warrantBias)}</b> yönünde temiz tetik oluştu; bundan sonraki sonuç gerçek işlem olarak puanlandı.</div>`:`<div class="lock" style="margin-top:8px">Teyit gelmeden varant alınmış sayılmadı. Aday yanlış olsa bile gerçek işlem hatası yazılmaz.</div>`}<div class="kpis" style="margin-top:8px">${ws.map(w=>`<div class="kpi"><span>${w.days}g yönsel</span><b>${fmt(w.returnPct,1)}%</b></div>`).join('')}</div><div class="metrics"><div class="metric"><span>Seçilen ufuk</span><b>${chosen.days||'—'} gün</b></div><div class="metric"><span>En iyi yönsel</span><b>${fmt(chosen.bestPct,1)}%</b></div><div class="metric"><span>En kötü ters</span><b>${fmt(chosen.worstPct,1)}%</b></div><div class="metric"><span>Hata türü</span><b>${esc(s.errorType||'—')}</b></div></div><div class="reason"><b>${esc(s.summary||'')}</b></div>${(s.lessons||[]).map(x=>`<div class="reason">${esc(x)}</div>`).join('')}<div class="lock" style="margin-top:8px">${esc(d.method||'')}</div></section>`;
++  $('#futureResult').innerHTML=`<section class="card ${verdictClass(verdict)}"><div class="ch"><div><div class="eyebrow">V19 · SONRASI ANALİZ EDİLDİ</div><div class="symbol">${esc(d.symbol)} · ${esc(d.effectiveDate)}</div><div class="dir">${entryLine}</div></div><div class="cscore">${opened?fmt(score,0):'—'}<small>${esc(verdict||'—')}</small></div></div><div class="decisionGrid"><div class="decisionBox"><span>Başlangıç kurulumu</span><b>${esc(s.initialStage||'—')}</b></div><div class="decisionBox"><span>1–5g teyit</span><b>${esc(s.confirmationStatus||'—')}</b></div><div class="decisionBox ${opened?'good':'warn'}"><span>Gerçek işlem</span><b>${opened?'AÇILDI':'AÇILMADI'}</b></div></div>${opened?`<div class="lock" style="margin-top:8px"><b>${esc(s.candidateDirection)} · ${esc(s.warrantBias)}</b> yönünde temiz tetik oluştu; bundan sonraki sonuç gerçek işlem olarak puanlandı.</div>`:`<div class="lock" style="margin-top:8px">Teyit gelmeden varant alınmış sayılmadı. Aday yanlış olsa bile gerçek işlem hatası yazılmaz.</div>`}<div class="kpis" style="margin-top:8px">${ws.map(w=>`<div class="kpi"><span>${w.days}g yönsel</span><b>${fmt(w.returnPct,1)}%</b></div>`).join('')}</div><div class="metrics"><div class="metric"><span>Seçilen ufuk</span><b>${chosen.days||'—'} gün</b></div><div class="metric"><span>En iyi yönsel</span><b>${fmt(chosen.bestPct,1)}%</b></div><div class="metric"><span>En kötü ters</span><b>${fmt(chosen.worstPct,1)}%</b></div><div class="metric"><span>Hata türü</span><b>${esc(s.errorType||'—')}</b></div></div><div class="reason"><b>${esc(s.summary||'')}</b></div>${(s.lessons||[]).map(x=>`<div class="reason">${esc(x)}</div>`).join('')}<div class="lock" style="margin-top:8px">${esc(d.method||'')}</div></section>`;
+   saveOutcome(d);renderAutoTests();
+ }
+ function saveOutcome(d){
+@@ -136,9 +136,9 @@
+ }
+ function renderAutoTests(){
+   const a=store('hl_auto_tests_v18'),v=a.filter(x=>x.version===18),tr=v.filter(x=>x.tradeOpened),ok=tr.filter(x=>x.tradeVerdict==='DOĞRU').length,partial=tr.filter(x=>x.tradeVerdict==='KISMEN').length,bad=tr.filter(x=>x.tradeVerdict==='YANLIŞ').length,miss=v.filter(x=>x.candidateVerdict==='FIRSAT KAÇTI').length,cancel=v.filter(x=>!x.tradeOpened&&x.initialStage!=='İŞLEM YOK').length,weighted=tr.length?(ok+partial*.5)*100/tr.length:0;
+-  $('#autoStats').innerHTML=`<div class="kpi"><span>V18 sınavı</span><b>${v.length}</b></div><div class="kpi"><span>Gerçek işlem</span><b>${tr.length}</b></div><div class="kpi"><span>İşlem başarısı</span><b>${tr.length?fmt(weighted,1)+'%':'—'}</b></div><div class="kpi"><span>Fırsat kaçtı</span><b>${miss}</b></div>`;
++  $('#autoStats').innerHTML=`<div class="kpi"><span>V19 sınavı</span><b>${v.length}</b></div><div class="kpi"><span>Gerçek işlem</span><b>${tr.length}</b></div><div class="kpi"><span>İşlem başarısı</span><b>${tr.length?fmt(weighted,1)+'%':'—'}</b></div><div class="kpi"><span>Fırsat kaçtı</span><b>${miss}</b></div>`;
+   $('#autoWeak').innerHTML=`<div class="reason">Gerçek işlemler: ${ok} doğru · ${partial} kısmen · ${bad} yanlış. Teyitsiz/iptal aday: ${cancel}. Başarı oranına yalnız açılmış TEMİZ İŞLEM girer.</div>`;
+-  $('#autoTests').innerHTML=v.length?v.map((x,i)=>{const w=(x.windows||[]).find(z=>z.days===x.horizon)||(x.windows||[]).slice(-1)[0]||{},vv=x.tradeOpened?x.tradeVerdict:x.candidateVerdict;return `<div class="candidate"><div class="ch"><div><div class="symbol">${esc(x.symbol)} · ${esc(x.date)}</div><div class="dir">${esc(x.initialStage)} → ${esc(x.confirmationStatus)} · ${esc(x.direction||'—')} ${esc(x.bias||'')}</div></div><span class="tag ${vv==='DOĞRU'||vv==='ADAY İPTALİ KORUDU'?'tg':vv==='YANLIŞ'||vv==='FIRSAT KAÇTI'?'tr':'ta'}">${esc(vv||'—')}</span></div><div class="small muted" style="margin-top:6px">${x.tradeOpened?'GERÇEK İŞLEM':'İŞLEM AÇILMADI'} · sonuç ${fmt(w.returnPct,1)}% · en iyi ${fmt(w.bestPct,1)}% · en kötü ${fmt(w.worstPct,1)}% · ${esc(x.errorType||'YOK')}</div><button class="btn ghost sm" style="margin-top:7px" onclick="removeAutoTestKey('${esc(x.key)}')">SİL</button></div>`}).join(''):'<div class="empty">Henüz V18 otomatik testi yok. Geçmişe Git → Sonrasını Analiz Et.</div>';
++  $('#autoTests').innerHTML=v.length?v.map((x,i)=>{const w=(x.windows||[]).find(z=>z.days===x.horizon)||(x.windows||[]).slice(-1)[0]||{},vv=x.tradeOpened?x.tradeVerdict:x.candidateVerdict;return `<div class="candidate"><div class="ch"><div><div class="symbol">${esc(x.symbol)} · ${esc(x.date)}</div><div class="dir">${esc(x.initialStage)} → ${esc(x.confirmationStatus)} · ${esc(x.direction||'—')} ${esc(x.bias||'')}</div></div><span class="tag ${vv==='DOĞRU'||vv==='ADAY İPTALİ KORUDU'?'tg':vv==='YANLIŞ'||vv==='FIRSAT KAÇTI'?'tr':'ta'}">${esc(vv||'—')}</span></div><div class="small muted" style="margin-top:6px">${x.tradeOpened?'GERÇEK İŞLEM':'İŞLEM AÇILMADI'} · sonuç ${fmt(w.returnPct,1)}% · en iyi ${fmt(w.bestPct,1)}% · en kötü ${fmt(w.worstPct,1)}% · ${esc(x.errorType||'YOK')}</div><button class="btn ghost sm" style="margin-top:7px" onclick="removeAutoTestKey('${esc(x.key)}')">SİL</button></div>`}).join(''):'<div class="empty">Henüz V19 otomatik testi yok. Geçmişe Git → Sonrasını Analiz Et.</div>';
+ }
+ function removeAutoTestKey(k){let a=store('hl_auto_tests_v18').filter(x=>x.key!==k);save('hl_auto_tests_v18',a);renderAutoTests()}
+ function renderDecisionAudit(d){
+@@ -146,7 +146,7 @@
+   const errRows=Object.entries(errs).sort((a,b)=>b[1]-a[1]);
+   const stability=(d.robustnessTrades||0)?(d.robustnessGap<=8?'GÜÇLÜ':d.robustnessGap<=15?'ORTA':'ZAYIF'):'—';
+   $('#auditSummary').className='card';
+-  $('#auditSummary').innerHTML=`<div class="ch"><div><div class="symbol">${d.symbolsRequested} hisse · ${d.years} yıl</div><div class="dir">V18 walk-forward + stabilite · her ${d.stepBars} barda bir kurulum · ${d.horizon}g ufuk</div></div><div class="cscore">${d.tradesOpened?fmt(d.weightedSuccess,1):'—'}<small>% gerçek işlem başarısı</small></div></div>
++  $('#auditSummary').innerHTML=`<div class="ch"><div><div class="symbol">${d.symbolsRequested} hisse · ${d.years} yıl</div><div class="dir">V19 walk-forward + stabilite · her ${d.stepBars} barda bir kurulum · ${d.horizon}g ufuk</div></div><div class="cscore">${d.tradesOpened?fmt(d.weightedSuccess,1):'—'}<small>% gerçek işlem başarısı</small></div></div>
+   <div class="kpis" style="margin-top:8px"><div class="kpi"><span>Test tarihi</span><b>${d.testedDates||0}</b></div><div class="kpi"><span>Gerçek işlem</span><b>${d.tradesOpened||0}</b></div><div class="kpi"><span>Doğru / Kısmen</span><b>${d.correct||0} / ${d.partial||0}</b></div><div class="kpi"><span>Yanlış</span><b>${d.wrong||0}</b></div></div>
+   <div class="metrics"><div class="metric"><span>CALL</span><b>${d.callTrades||0} işlem · ${(d.callTrades||0)?fmt(d.callSuccess,1)+'%':'—'}</b></div><div class="metric"><span>PUT</span><b>${d.putTrades||0} işlem · ${(d.putTrades||0)?fmt(d.putSuccess,1)+'%':'—'}</b></div><div class="metric"><span>Ort. ${d.horizon}g yönsel</span><b>${fmt(d.avgReturn,1)}%</b></div><div class="metric"><span>Ort. ters hareket</span><b>${fmt(d.avgWorst,1)}%</b></div><div class="metric"><span>Ort. en iyi</span><b>${fmt(d.avgBest,1)}%</b></div><div class="metric"><span>En kötü tek ters</span><b>${fmt(d.maxAdverse,1)}%</b></div><div class="metric"><span>Alternatif tarih sınavı</span><b>${(d.robustnessTrades||0)?fmt(d.robustnessSuccess,1)+'%':'—'}</b></div><div class="metric"><span>Tarih dayanıklılığı</span><b>${stability} · Δ${fmt(d.robustnessGap,1)}</b></div></div>
+   <div class="metrics"><div class="metric"><span>İlk anda temiz</span><b>${d.cleanInitial||0}</b></div><div class="metric"><span>Teyit bekle</span><b>${d.waitingInitial||0}</b></div><div class="metric"><span>Fırsat oluşuyor</span><b>${d.developingInitial||0}</b></div><div class="metric"><span>İptal aday</span><b>${d.cancelledCandidates||0}</b></div><div class="metric"><span>Fırsat kaçtı</span><b>${d.missedOpportunities||0}</b></div><div class="metric"><span>İşlem yok</span><b>${d.rejectedInitial||0}</b></div></div>
+@@ -155,7 +155,7 @@
+   <div class="sectionTitle"><b>Öğrenilecek vakalar</b><span>yanlış işlem + kaçan temiz fırsat</span></div>${miss.length?miss.map(x=>`<div class="warning"><b>${esc(x.symbol)} · ${esc(x.date)}</b> · ${esc(x.errorType||x.candidateVerdict)}<br>${esc(x.stage)} · ${esc(x.direction)} ${esc(x.bias)} · ${x.tradeOpened?'işlem açıldı':'işlem açılmadı'} · sonuç ${fmt(x.returnPct,1)}% · en iyi ${fmt(x.bestPct,1)}% · en kötü ${fmt(x.worstPct,1)}%${x.adaptiveSamples?` · hafıza ${x.adaptiveSamples} (${esc(x.adaptiveLabel||'')})`:''}</div>`).join(''):'<div class="reason">Belirgin yanlış gerçek işlem veya kaçırılmış temiz hareket çıkmadı.</div>'}
+   <div class="lock" style="margin-top:8px">${esc(d.method||'')}</div>`;
+ }
+-function renderBacktest(d){const m=d.metrics||{};$('#btSummary').className='card';$('#btSummary').innerHTML=`<div class="ch"><div><div class="symbol">${esc(d.symbol)} · ${d.direction==='CALL'?'YUKARI':'AŞAĞI'}</div><div class="dir">temiz skor ≥ ${d.threshold} · örnek gücü ${esc(m.sampleStrength||'—')}</div></div><div class="cscore">${fmt(m.hitRate20,1)}<small>% 20g isabet</small></div></div><div class="kpis" style="margin-top:8px"><div class="kpi"><span>Sinyal</span><b>${m.signals||0}</b></div><div class="kpi"><span>20g ≥%3</span><b>${fmt(m.cleanRate20,1)}%</b></div><div class="kpi"><span>Ort. 20g</span><b>${fmt(m.avg20,1)}%</b></div><div class="kpi"><span>Ort. MAE</span><b>${fmt(m.avgMae20,1)}%</b></div></div><div class="warning">Bu bölüm yalnız V18 TEMİZ İŞLEM aşamasına gerçekten ulaşan, tarih dayanıklılığı yeterli nadir sinyalleri ölçer. Sinyal sayısının düşük olması amaçlanan davranıştır.</div>`}
++function renderBacktest(d){const m=d.metrics||{};$('#btSummary').className='card';$('#btSummary').innerHTML=`<div class="ch"><div><div class="symbol">${esc(d.symbol)} · ${d.direction==='CALL'?'YUKARI':'AŞAĞI'}</div><div class="dir">temiz skor ≥ ${d.threshold} · örnek gücü ${esc(m.sampleStrength||'—')}</div></div><div class="cscore">${fmt(m.hitRate20,1)}<small>% 20g isabet</small></div></div><div class="kpis" style="margin-top:8px"><div class="kpi"><span>Sinyal</span><b>${m.signals||0}</b></div><div class="kpi"><span>20g ≥%3</span><b>${fmt(m.cleanRate20,1)}%</b></div><div class="kpi"><span>Ort. 20g</span><b>${fmt(m.avg20,1)}%</b></div><div class="kpi"><span>Ort. MAE</span><b>${fmt(m.avgMae20,1)}%</b></div></div><div class="warning">Bu bölüm yalnız V19 TEMİZ İŞLEM aşamasına gerçekten ulaşan, tarih dayanıklılığı yeterli nadir sinyalleri ölçer. Sinyal sayısının düşük olması amaçlanan davranıştır.</div>`}
+ function quickWatch(s){let a=store('hl_watch');s=s.toUpperCase();if(!a.includes(s)){a.unshift(s);save('hl_watch',a)}renderWatch()}
+ function addWatch(){const s=$('#watchInput').value.trim().toUpperCase();if(!s)return;quickWatch(s);$('#watchInput').value=''}
+ function renderWatch(){const a=store('hl_watch');$('#watchList').innerHTML=a.length?a.map((s,i)=>`<div class="listItem"><div><b>${esc(s)}</b><div class="tiny muted">Geçmiş ve bugün analizine hazır</div></div><div class="row"><button class="btn primary sm" onclick="$('#pastSymbol').value='${esc(s)}';go('past')">GEÇMİŞ</button><button class="btn ghost sm" onclick="removeWatch(${i})">SİL</button></div></div>`).join(''):'<div class="empty" style="margin-top:10px">İzleme listesi boş.</div>'}
+--- a/app/src/main/java/com/varantmatik/app/AnalysisCore.kt
++++ b/app/src/main/java/com/varantmatik/app/AnalysisCore.kt
+@@ -167,7 +167,8 @@
+     val avgTriggerScore: Double,
+     val score: Double,
+     val label: String,
+-    val reasons: List<String> = emptyList()
++    val reasons: List<String> = emptyList(),
++    val consecutiveAgreement: Int = 0
+ )
+ 
+ internal data class CleanSetup(
+@@ -312,6 +313,18 @@
+ 
+ internal object AnalysisCore {
+     private val zone = ZoneId.of("Europe/Istanbul")
++
++    // Live daily data must be closed before it reaches either signals or historical tests.
++    // If today's exchange session metadata is absent, keep only earlier dates.
++    fun completedDailyBars(bars: List<Bar>, asOf: Instant, sessionEnd: Long?): List<Bar> {
++        val today = asOf.atZone(zone).toLocalDate()
++        return bars.filter {
++            val day = Instant.ofEpochSecond(it.time).atZone(zone).toLocalDate()
++            day < today || (day == today && sessionEnd != null && sessionEnd > it.time &&
++                Instant.ofEpochSecond(sessionEnd).atZone(zone).toLocalDate() == today &&
++                asOf.epochSecond >= sessionEnd + 15 * 60)
++        }.sortedBy { it.time }.distinctBy { Instant.ofEpochSecond(it.time).atZone(zone).toLocalDate() }
++    }
+ 
+     fun aggregateFourHour(hourly: List<Bar>): List<Bar> {
+         if (hourly.size < 4) return emptyList()
+@@ -1177,7 +1190,8 @@
+         reasons += "Son ${rows.size} işlem gününde yön uyumu ${fmt1(agreement)}% · stabilite ${fmt1(score)}"
+         if (agreement < 62.0) reasons += "Yakın tarihler aynı yönü korumuyor; tek günlük sinyal riski"
+         if (avgTrigger < 58.0) reasons += "Yakın günlerde giriş tetikleri zayıf kaldı"
+-        return TemporalStability(direction, rows.size, agreement, avgSetup, avgTrigger, score, label, reasons)
++        val consecutive = rows.takeLastWhile { it.direction == direction }.size
++        return TemporalStability(direction, rows.size, agreement, avgSetup, avgTrigger, score, label, reasons, consecutive)
+     }
+ 
+     fun cleanSetup(decision: HistoricalDecision, fourHour: Technical? = null, adaptive: AdaptiveProfile? = null, stability: TemporalStability? = null): CleanSetup {
+@@ -1373,12 +1387,19 @@
+         val triggerPenalty = activeProfile?.triggerPenalty ?: 0.0
+         val combinedPenalty = activeProfile?.combinedPenalty ?: 0.0
+         val activeStability = stability?.takeIf { it.direction == inferredDirection }
+-        val stabilityPenalty = when {
++        val earlyPenalty = when {
+             activeStability == null || activeStability.samples < 3 -> 0.0
+             activeStability.score < 55.0 || activeStability.agreementPct < 45.0 -> 8.0
+             activeStability.agreementPct < 58.0 -> 5.0
+             activeStability.score < 60.0 || activeStability.agreementPct < 65.0 -> 3.0
+             activeStability.score < 68.0 -> 1.5
++            else -> 0.0
++        }
++        val stabilityPenalty = when {
++            activeStability == null || activeStability.samples < 3 -> 0.0
++            activeStability.score < 55.0 || activeStability.agreementPct < 45.0 -> 8.0
++            activeStability.score < 65.0 || activeStability.agreementPct < 58.0 -> 5.0
++            activeStability.score < 72.0 || activeStability.agreementPct < 66.0 -> 2.5
+             else -> 0.0
+         }
+         val putExtra = if (!up) 2.0 else 0.0
+@@ -1390,19 +1411,37 @@
+         val developingMin = 66.0 + setupPenalty * 0.35
+         if (activeProfile != null) reasons += activeProfile.reasons
+         if (activeStability != null) reasons += activeStability.reasons
+-        // A fast but genuine turn may need a few sessions before the stability average catches up.
+-        // Require at least 65% directional agreement, while allowing a 60+ stability score so
+-        // a clean trigger can confirm inside the intended 1-5 day window.
+-        val stabilityClean = activeStability == null || activeStability.samples < 3 ||
+-            (activeStability.score >= 60.0 && activeStability.agreementPct >= 65.0)
++        val stabilityAvailable = activeStability != null && activeStability.samples >= 5 &&
++            activeStability.score.isFinite() && activeStability.agreementPct.isFinite()
++        val stabilityClean = stabilityAvailable && activeStability!!.score >= 68.0 &&
++            activeStability.agreementPct >= 65.0 && activeStability.consecutiveAgreement >= 2
++        val earlyReady = activeStability != null && activeStability.samples >= 3 &&
++            activeStability.score.isFinite() && activeStability.agreementPct.isFinite() &&
++            activeStability.score >= 60.0 && activeStability.agreementPct >= 65.0 &&
++            setupScore >= 78.0 + setupPenalty + earlyPenalty * 0.45 &&
++            triggerScore >= 72.0 + triggerPenalty + earlyPenalty * 0.55 + putExtra &&
++            combined >= 79.0 + combinedPenalty + earlyPenalty * 0.40 + (if (!up) 1.0 else 0.0)
++        val stabilityVetoes = mutableListOf<String>()
++        if (!stabilityAvailable) stabilityVetoes += "Temiz sinyal için 5 tamamlanmış günlük gözlem gerekli"
++        if (activeStability != null) {
++            if (activeStability.score < 68.0) stabilityVetoes += "Stabilite 68 puana ulaşmalı"
++            if (activeStability.agreementPct < 65.0) stabilityVetoes += "Yön uyumu en az %65 olmalı"
++            if (activeStability.consecutiveAgreement < 2) stabilityVetoes += "Son iki kapanış aynı yönde olmalı"
++        }
++        if (setupScore < cleanSetupMin || triggerScore < cleanTriggerMin || combined < cleanCombinedMin)
++            stabilityVetoes += "Temiz işlem için kurulum, tetik ve birleşik skor eşikleri tamamlanmalı"
+         val status = when {
+             structuralReady && triggerReady && stabilityClean && setupScore >= cleanSetupMin && triggerScore >= cleanTriggerMin && combined >= cleanCombinedMin -> "TEMİZ İŞLEM"
++            structuralReady && triggerReady && earlyReady -> "ERKEN UYARI"
++            structuralReady && !stabilityAvailable -> "VERİ YETERSİZ"
+             structuralReady && setupScore >= waitSetupMin && triggerScore >= waitTriggerMin -> "TEYİT BEKLE"
+             structuralReady && setupScore >= developingMin -> "FIRSAT OLUŞUYOR"
+             else -> "İŞLEM YOK"
+         }
+         val timing = when (status) {
+             "TEMİZ İŞLEM" -> "0–3 işlem günü"
++            "ERKEN UYARI" -> "1–5 işlem günü kapanış teyidi"
++            "VERİ YETERSİZ" -> "Tamamlanmış veri bekleniyor"
+             "TEYİT BEKLE" -> "1–5 işlem günü teyit"
+             "FIRSAT OLUŞUYOR" -> "1–5 işlem günü izle"
+             else -> "YOK"
+@@ -1410,11 +1449,13 @@
+         val bias = if (up) "CALL" else "PUT"
+         val finalAction = when (status) {
+             "TEMİZ İŞLEM" -> "$bias İÇİN TEMİZ GİRİŞ"
++            "ERKEN UYARI" -> "$bias ADAYI · KAPANIŞ TEYİDİ BEKLE"
++            "VERİ YETERSİZ" -> "VERİ YETERSİZ · VARANT ALMA"
+             "TEYİT BEKLE" -> "$bias ADAYI · ŞİMDİ ALMA"
+             "FIRSAT OLUŞUYOR" -> "İZLE · VARANT ALMA"
+             else -> "İŞLEM YOK"
+         }
+-        val visibleVetoes = (setupVetoes + triggerVetoes).distinct()
++        val visibleVetoes = (setupVetoes + triggerVetoes + stabilityVetoes).distinct()
+         return CleanSetup(
+             direction = inferredDirection,
+             warrantBias = bias,
+@@ -1431,7 +1472,7 @@
+             setupScore = setupScore,
+             triggerScore = triggerScore,
+             finalAction = finalAction,
+-            confirmationsNeeded = triggerVetoes.distinct(),
++            confirmationsNeeded = (triggerVetoes + stabilityVetoes).distinct(),
+             adaptiveSamples = activeProfile?.samples ?: 0,
+             adaptiveSuccess = activeProfile?.shrunkSuccess,
+             adaptivePenalty = (setupPenalty + triggerPenalty + combinedPenalty),
+@@ -1488,14 +1529,14 @@
+         var confirmationDecision: HistoricalDecision? = null
+         var confirmationStatus = when (initial.status) {
+             "TEMİZ İŞLEM" -> "DOĞRUDAN TEMİZ İŞLEM"
+-            "TEYİT BEKLE" -> "TEYİT ARANIYOR"
++            "TEYİT BEKLE", "ERKEN UYARI", "VERİ YETERSİZ" -> "TEYİT ARANIYOR"
+             "FIRSAT OLUŞUYOR" -> "KURULUM İZLENİYOR"
+             else -> "İŞLEM YOK"
+         }
+         if (initial.status == "TEMİZ İŞLEM") {
+             confirmationIdx = idx
+             confirmationDecision = decision
+-        } else if ((initial.status == "TEYİT BEKLE" || initial.status == "FIRSAT OLUŞUYOR") && initial.direction != "YOK") {
++        } else if ((initial.status in setOf("TEYİT BEKLE", "ERKEN UYARI", "VERİ YETERSİZ", "FIRSAT OLUŞUYOR")) && initial.direction != "YOK") {
+             val lastCheck = min(idx + 5, bars.lastIndex - 1)
+             for (j in idx + 1..lastCheck) {
+                 val d = historicalDecisionAt(bars, j, marketBars) ?: continue
+@@ -1509,7 +1550,7 @@
+                     break
+                 }
+                 val oppositeSetup = c.direction != "YOK" && c.direction != initial.direction &&
+-                    (c.status == "TEMİZ İŞLEM" || c.status == "TEYİT BEKLE")
++                    (c.status in setOf("TEMİZ İŞLEM", "TEYİT BEKLE", "ERKEN UYARI"))
+                 val structuralFailure = (initial.direction == "YUKARI" && (d.phase == "TREND BOZULMASI / ŞOK RİSKİ" || d.longTrend == "AŞAĞI")) ||
+                     (initial.direction == "AŞAĞI" && (d.exhaustionScore >= 72.0 || d.longTrend == "YUKARI"))
+                 if (oppositeSetup || structuralFailure) {
+@@ -1863,7 +1904,7 @@
+                 val setup = cleanSetup(d, null, profile, stability)
+                 when (setup.status) {
+                     "TEMİZ İŞLEM" -> cleanInitial++
+-                    "TEYİT BEKLE" -> waitingInitial++
++                    "TEYİT BEKLE", "ERKEN UYARI", "VERİ YETERSİZ" -> waitingInitial++
+                     "FIRSAT OLUŞUYOR" -> developingInitial++
+                     else -> rejectedInitial++
+                 }
+--- a/app/src/main/java/com/varantmatik/app/DataSources.kt
++++ b/app/src/main/java/com/varantmatik/app/DataSources.kt
+@@ -64,7 +64,13 @@
+                 volume = if (v == null || v.isNull(i)) 0.0 else v.optDouble(i, 0.0)
+             )
+         }
+-        return out.distinctBy { it.time }.sortedBy { it.time }.takeIf { it.size >= 40 }
++        val ordered = out.distinctBy { it.time }.sortedBy { it.time }
++        val series = if (interval == "1d") {
++            val end = result.optJSONObject("meta")?.optJSONObject("currentTradingPeriod")
++                ?.optJSONObject("regular")?.optLong("end", 0L)?.takeIf { it > 0L }
++            AnalysisCore.completedDailyBars(ordered, java.time.Instant.ofEpochSecond(now), end)
++        } else ordered
++        return series.takeIf { it.size >= 40 }
+     }
+ 
+     fun loadWarrants(
+--- a/app/src/main/java/com/varantmatik/app/MainActivity.kt
++++ b/app/src/main/java/com/varantmatik/app/MainActivity.kt
+@@ -217,7 +217,7 @@
+                         ?: if (marketSymbol == "XU030") DataSources.loadSeries("XU100", fetchDays, "1d") else null
+                     val decision = AnalysisCore.historicalDecisionAt(bars, targetIdx, market)
+                         ?: throw IllegalStateException("Seçilen tarihte karar üretmek için veri yetersiz")
+-                    emitProgress(requestId, "V18 hafıza + tarih dayanıklılığı yalnız geçmişten kuruluyor", 68)
++                    emitProgress(requestId, "V19 hafıza + tarih dayanıklılığı yalnız geçmişten kuruluyor", 68)
+                     val pastBars = bars.subList(0, targetIdx + 1)
+                     val cutoff = bars[targetIdx].time
+                     val pastMarket = market?.filter { it.time <= cutoff }
+@@ -273,7 +273,7 @@
+                     val evaluation = AnalysisCore.evaluateFutureDecision(bars, targetIdx, decision, horizon)
+                         ?: throw IllegalStateException("Sonrasını değerlendirmek için yeterli veri yok")
+                     val strategyEvaluation = AnalysisCore.evaluateSetupChain(bars, targetIdx, market, decision, horizon, profile, stability)
+-                        ?: throw IllegalStateException("V18 işlem zinciri değerlendirilemedi")
++                        ?: throw IllegalStateException("V19 işlem zinciri değerlendirilemedi")
+                     val root = JSONObject()
+                         .put("symbol", sym)
+                         .put("requestedDate", target.toString())
+@@ -281,7 +281,7 @@
+                         .put("decision", historicalDecisionJson(sym, target.toString(), effectiveDate.toString(), decision, adaptiveSetup))
+                         .put("evaluation", futureEvaluationJson(evaluation))
+                         .put("strategyEvaluation", setupChainEvaluationJson(strategyEvaluation))
+-                        .put("method", "V18 ilk kurulumu seçilen gün ve öncesiyle kilitler. Hisse-yön hafızası yalnız daha önce sonucu tamamlanmış işlemlerden; tarih dayanıklılığı yalnız seçilen güne kadarki son işlem günlerinden kurulur. Aday 1–5 işlem gününde yeniden aynı yön ve temiz tetik üretirse gerçek işlem açılır.")
++                        .put("method", "V19 ilk kurulumu seçilen gün ve öncesiyle kilitler. Hisse-yön hafızası yalnız daha önce sonucu tamamlanmış işlemlerden; tarih dayanıklılığı yalnız seçilen güne kadarki son işlem günlerinden kurulur. Aday 1–5 işlem gününde yeniden aynı yön ve temiz tetik üretirse gerçek işlem açılır.")
+                     emit("historicalOutcome", requestId, root)
+                 } catch (e: Exception) { emitError(requestId, e) }
+             }
+@@ -314,7 +314,7 @@
+                     val perSymbol = JSONArray()
+                     val misses = mutableListOf<JSONObject>()
+                     symbols.forEachIndexed { index, sym ->
+-                        emitProgress(requestId, "$sym V18 walk-forward + stabilite sınavı ${index + 1}/${symbols.size}", 8 + index * 82 / symbols.size)
++                        emitProgress(requestId, "$sym V19 walk-forward + stabilite sınavı ${index + 1}/${symbols.size}", 8 + index * 82 / symbols.size)
+                         val bars = try { DataSources.loadSeries(sym, fetchDays, "1d") } catch (_: Exception) { null }
+                         if (bars == null || bars.size < 280) return@forEachIndexed
+                         val market = if (sym == "XU030") DataSources.loadSeries("XU100", fetchDays, "1d") else commonMarket
+@@ -376,7 +376,7 @@
+                         .put("avgReturn", avgReturn).put("avgBest", avgBest).put("avgWorst", avgWorst).put("maxAdverse", maxAdverse)
+                         .put("robustnessSuccess", robustnessSuccess).put("robustnessGap", robustnessGap).put("robustnessTrades", robustnessTrades)
+                         .put("errorBreakdown", errorJson).put("perSymbol", perSymbol).put("misses", missArray)
+-                        .put("method", "V18 walk-forward sınavında her tarih yalnız kendisinden önce sonucu tamamlanmış işlemlerden öğrenir. CALL ve PUT hafızaları ayrıdır; zayıf hisse-yön geçmişi eşikleri yalnız sıkılaştırır. Ayrıca seçilen günün öncesindeki 3–7 işlem gününde yönün korunup korunmadığı tarih dayanıklılığı olarak ölçülür; gelecek günler karar hesabına girmez. İkinci yarım-adım sınavı örnekleme tarihine bağımlılığı ayrıca ölçer.")
++                        .put("method", "V19 walk-forward sınavında her tarih yalnız kendisinden önce sonucu tamamlanmış işlemlerden öğrenir. CALL ve PUT hafızaları ayrıdır; zayıf hisse-yön geçmişi eşikleri yalnız sıkılaştırır. Ayrıca seçilen günün öncesindeki 3–7 işlem gününde yönün korunup korunmadığı tarih dayanıklılığı olarak ölçülür; gelecek günler karar hesabına girmez. İkinci yarım-adım sınavı örnekleme tarihine bağımlılığı ayrıca ölçer.")
+                     emit("decisionAudit", requestId, root)
+                 } catch (e: Exception) { emitError(requestId, e) }
+             }
+@@ -400,12 +400,13 @@
+                     var done = 0
+                     var analyzed = 0
+ 
+-                    fun candidateJson(symbol: String, d: HistoricalDecision, c: CleanSetup, four: Technical?): JSONObject {
++                    fun candidateJson(symbol: String, d: HistoricalDecision, c: CleanSetup, four: Technical?, signalTime: Long): JSONObject {
+                         return JSONObject()
+                             .put("symbol", symbol)
+                             .put("direction", c.direction)
+                             .put("warrantBias", c.warrantBias)
+                             .put("action", c.status)
++                            .put("signalDate", Instant.ofEpochSecond(signalTime).atZone(ZoneId.of("Europe/Istanbul")).toLocalDate().toString())
+                             .put("setupScore", c.score)
+                             .put("opportunityScore", c.setupScore)
+                             .put("triggerScore", c.triggerScore)
+@@ -466,9 +467,9 @@
+                             }
+                             val clean = AnalysisCore.cleanSetup(d, four, profile, stability)
+                             when (clean.status) {
+-                                "TEMİZ İŞLEM" -> cleanOut += candidateJson(symbol, d, clean, four)
+-                                "TEYİT BEKLE" -> waitingOut += candidateJson(symbol, d, clean, four)
+-                                "FIRSAT OLUŞUYOR" -> developingOut += candidateJson(symbol, d, clean, four)
++                                "TEMİZ İŞLEM" -> cleanOut += candidateJson(symbol, d, clean, four, series.last().time)
++                                "TEYİT BEKLE", "ERKEN UYARI", "VERİ YETERSİZ" -> waitingOut += candidateJson(symbol, d, clean, four, series.last().time)
++                                "FIRSAT OLUŞUYOR" -> developingOut += candidateJson(symbol, d, clean, four, series.last().time)
+                             }
+                         } catch (_: Exception) { }
+                         done++
+@@ -493,7 +494,7 @@
+                         .put("candidates", JSONArray(cleanSorted))
+                         .put("waiting", JSONArray(waitingSorted))
+                         .put("developing", JSONArray(developingSorted))
+-                        .put("method", "V18 setup → teyit zincirine tarih dayanıklılığı ekler. Hisse-yön hafızası ve son günlerin yön istikrarı eşikleri yalnız sıkılaştırabilir; gelecek fiyat kullanılmaz. PUT tarafında aşırı satım, satış tükenmesi ve yakın destek geç giriş olarak daha sert veto edilir. Varant seçimi yalnız TEMİZ İŞLEM aşamasında açılır."))
++                        .put("method", "V19 tamamlanmış günlük veriyi kullanır. Erken uyarı: stabilite 60 ve uyum %65. Temiz sinyal: stabilite 68, uyum %65, beş günlük gözlem ve son iki kapanışta aynı yön. Veri eksikken temiz sinyal üretilmez. Erken uyarı işlem izni değildir."))
+                 } catch (e: Exception) { emitError(requestId, e) }
+             }
+         }
+@@ -538,7 +539,7 @@
+                     else (DataSources.loadSeries("XU030", years * 365 + 300, "1d") ?: DataSources.loadSeries("XU100", years * 365 + 300, "1d"))
+                     emitProgress(requestId, "Sinyaller geleceği görmeden yeniden kuruluyor", 42)
+                     val res = AnalysisCore.runHistoricalDecisionBacktest(bars, market, dir, threshold.toDouble(), 12)
+-                    emit("backtest", requestId, backtestJson(sym, dir, threshold, res).put("engine", "V18 walk-forward hafıza + tarih dayanıklılığı + setup → teyit → temiz işlem motoru"))
++                    emit("backtest", requestId, backtestJson(sym, dir, threshold, res).put("engine", "V19 walk-forward hafıza + tarih dayanıklılığı + setup → teyit → temiz işlem motoru"))
+                 } catch (e: Exception) { emitError(requestId, e) }
+             }
+         }
+--- a/app/src/test/java/com/varantmatik/app/AnalysisCoreTest.kt
++++ b/app/src/test/java/com/varantmatik/app/AnalysisCoreTest.kt
+@@ -257,7 +257,8 @@
+         val closes = List(300) { i -> 80.0 + i * 0.16 + sin(i / 3.2) * 2.1 }
+         val market = List(300) { i -> 100.0 + i * 0.07 + sin(i / 5.0) * 0.5 }
+         val d = AnalysisCore.historicalDecisionAt(patternBars(closes), closes.lastIndex, patternBars(market))!!
+-        val c = AnalysisCore.cleanSetup(d, null)
++        val st = AnalysisCore.temporalStabilityAt(patternBars(closes), closes.lastIndex, patternBars(market), "YUKARI")!!
++        val c = AnalysisCore.cleanSetup(d, null, null, st)
+         assertEquals("TEMİZ İŞLEM", c.status)
+         assertEquals("YUKARI", c.direction)
+         assertEquals("CALL", c.warrantBias)
+@@ -299,7 +300,8 @@
+         val pullback = List(3) { i -> top - 4.0 * (i + 1) / 3.0 }
+         val xs = patternBars(base + pullback)
+         val d = AnalysisCore.historicalDecisionAt(xs, xs.lastIndex, null)!!
+-        val c = AnalysisCore.cleanSetup(d, null)
++        val st = AnalysisCore.temporalStabilityAt(xs, xs.lastIndex, null, "YUKARI")
++        val c = AnalysisCore.cleanSetup(d, null, null, st)
+         assertEquals("YUKARI", c.direction)
+         assertEquals("FIRSAT OLUŞUYOR", c.status)
+         assertFalse(c.hardGate)
+@@ -317,7 +319,9 @@
+         val xs = patternBars(base + pullback + future)
+         val idx = base.size + pullback.size - 1
+         val d = AnalysisCore.historicalDecisionAt(xs, idx, null)!!
+-        val c = AnalysisCore.cleanSetup(d, null)
++        val raw = AnalysisCore.cleanSetup(d, null)
++        val st = AnalysisCore.temporalStabilityAt(xs, idx, null, raw.direction)
++        val c = AnalysisCore.cleanSetup(d, null, null, st)
+         assertEquals("FIRSAT OLUŞUYOR", c.status)
+         val e = AnalysisCore.evaluateSetupChain(xs, idx, null, d, 20)!!
+         assertFalse(e.tradeOpened)
+@@ -325,7 +329,7 @@
+         assertEquals("FIRSAT KAÇTI", e.candidateVerdict)
+     }
+ 
+-    @Test fun v16CandidateCanConfirmWithinFiveDaysAndOnlyThenOpenTrade() {
++    @Test fun v19FastTurnWithLaggingStabilityRemainsEarlyAndDoesNotOpenTrade() {
+         val base = List(280) { i -> 100.0 + i * 0.26 + sin(i / 5.0) * 1.2 }
+         val top = base.last()
+         val pullback = List(3) { i -> top - 4.0 * (i + 1) / 3.0 }
+@@ -335,12 +339,16 @@
+         val idx = base.size + pullback.size - 1
+         val d = AnalysisCore.historicalDecisionAt(xs, idx, null)!!
+         val e = AnalysisCore.evaluateSetupChain(xs, idx, null, d, 20)!!
+-        assertTrue(e.tradeOpened)
+-        assertEquals("TEYİT GELDİ", e.confirmationStatus)
+-        assertNotNull(e.confirmationBars)
+-        assertTrue(e.confirmationBars!! in 1..5)
+-        assertNotNull(e.tradeEntryDate)
+-        assertNotEquals(e.confirmationDate, e.tradeEntryDate)
++        val earlyDay = idx + 4
++        val earlyDecision = AnalysisCore.historicalDecisionAt(xs, earlyDay, null)!!
++        val st = AnalysisCore.temporalStabilityAt(xs, earlyDay, null, "YUKARI")!!
++        assertTrue(st.score in 60.0..67.999)
++        val early = AnalysisCore.cleanSetup(earlyDecision, stability = st)
++        assertEquals("ERKEN UYARI", early.status)
++        assertFalse(early.hardGate)
++        assertFalse(e.tradeOpened)
++        assertNull(e.tradeEntryDate)
++        assertEquals("TEYİT GELMEDİ", e.confirmationStatus)
+     }
+ 
+     @Test fun v16AuditSuccessDenominatorContainsOnlyOpenedTrades() {
+@@ -386,7 +394,8 @@
+         val closes = List(300) { i -> 80.0 + i * 0.16 + sin(i / 3.2) * 2.1 }
+         val market = List(300) { i -> 100.0 + i * 0.07 + sin(i / 5.0) * 0.5 }
+         val d = AnalysisCore.historicalDecisionAt(patternBars(closes), closes.lastIndex, patternBars(market))!!
+-        val raw = AnalysisCore.cleanSetup(d, null, null, null)
++        val st = AnalysisCore.temporalStabilityAt(patternBars(closes), closes.lastIndex, patternBars(market), "YUKARI")!!
++        val raw = AnalysisCore.cleanSetup(d, null, null, st)
+         assertEquals("TEMİZ İŞLEM", raw.status)
+         val weak = TemporalStability("YUKARI", 5, 42.0, 76.0, 66.0, 55.0, "ZAYIF")
+         val filtered = AnalysisCore.cleanSetup(d, null, null, weak)
+@@ -427,4 +436,102 @@
+         assertEquals(r.testedDates, r.cleanInitial + r.waitingInitial + r.developingInitial + r.rejectedInitial)
+     }
+ 
++
++    private fun v19StrongDecision(): HistoricalDecision {
++        val closes = List(300) { i -> 80.0 + i * 0.16 + sin(i / 3.2) * 2.1 }
++        val market = List(300) { i -> 100.0 + i * 0.07 + sin(i / 5.0) * 0.5 }
++        return AnalysisCore.historicalDecisionAt(patternBars(closes), closes.lastIndex, patternBars(market))!!
++            .copy(trendStrength = 95.0, confidence = 95.0, entryQuality = 95.0,
++                marketScore = 90.0, relativeStrength20 = 10.0, adx = 35.0, volumeRatio = 1.6)
++    }
++
++    private fun v19Stability(score: Double = 80.0, agreement: Double = 80.0,
++        samples: Int = 5, consecutive: Int = 2, direction: String = "YUKARI") =
++        TemporalStability(direction, samples, agreement, 80.0, 80.0, score, "TEST", consecutiveAgreement = consecutive)
++
++    @Test fun v19EarlyAlertDoesNotGrantTradePermission() {
++        val d = v19StrongDecision()
++        for (score in listOf(60.0, 62.0, 67.999)) {
++            val c = AnalysisCore.cleanSetup(d, stability = v19Stability(score))
++            assertEquals("ERKEN UYARI", c.status)
++            assertFalse(c.hardGate)
++            assertTrue(c.confirmationsNeeded.any { it.contains("68") })
++        }
++        assertNotEquals("ERKEN UYARI", AnalysisCore.cleanSetup(d, stability = v19Stability(59.999)).status)
++        assertNotEquals("ERKEN UYARI", AnalysisCore.cleanSetup(d, stability = v19Stability(62.0, 64.999)).status)
++    }
++
++    @Test fun v19CleanThresholdRequiresTwoConsecutiveCloses() {
++        val d = v19StrongDecision()
++        assertEquals("TEMİZ İŞLEM", AnalysisCore.cleanSetup(d, stability = v19Stability(68.0, 65.0)).status)
++        val intermittent = AnalysisCore.cleanSetup(d, stability = v19Stability(80.0, 80.0, consecutive = 1))
++        assertEquals("ERKEN UYARI", intermittent.status)
++        assertFalse(intermittent.hardGate)
++        assertTrue(intermittent.confirmationsNeeded.any { it.contains("Son iki") })
++        assertFalse(AnalysisCore.cleanSetup(d, stability = v19Stability(80.0, 64.999)).hardGate)
++    }
++
++    @Test fun v19MissingMismatchedAndNonfiniteEvidenceCannotAuthorizeTrade() {
++        val d = v19StrongDecision()
++        for (st in listOf(null, v19Stability(samples = 0), v19Stability(samples = 2),
++            v19Stability(direction = "AŞAĞI"), v19Stability(score = Double.NaN),
++            v19Stability(agreement = Double.POSITIVE_INFINITY))) {
++            val c = AnalysisCore.cleanSetup(d, stability = st)
++            assertEquals("VERİ YETERSİZ", c.status)
++            assertFalse(c.hardGate)
++        }
++        for (n in 3..4) {
++            val c = AnalysisCore.cleanSetup(d, stability = v19Stability(samples = n))
++            assertEquals("ERKEN UYARI", c.status)
++            assertFalse(c.hardGate)
++        }
++    }
++
++    @Test fun v19EarlyAlertCannotBypassExistingStructuralOrTriggerVetoes() {
++        val d = v19StrongDecision()
++        for (bad in listOf(d.copy(extensionRisk = 90.0), d.copy(volumeRatio = 0.5),
++            d.copy(newPosition = "BEKLE"))) {
++            val c = AnalysisCore.cleanSetup(bad, stability = v19Stability(62.0))
++            assertNotEquals("ERKEN UYARI", c.status)
++            assertFalse(c.hardGate)
++        }
++    }
++
++    @Test fun v19DailyClosureUsesExchangeMetadataAndWaitsForFinalization() {
++        fun epoch(s: String) = java.time.ZonedDateTime.parse(s).toEpochSecond()
++        val yesterday = Bar(epoch("2026-10-07T10:00:00+03:00"), 10.0, 12.0, 9.0, 11.0, 100.0)
++        val today = yesterday.copy(time = epoch("2026-10-08T10:00:00+03:00"))
++        val tomorrow = today.copy(time = epoch("2026-10-09T10:00:00+03:00"))
++        val all = listOf(yesterday, today, tomorrow)
++        val end = epoch("2026-10-08T18:10:00+03:00")
++        fun at(s: String, session: Long? = end) = AnalysisCore.completedDailyBars(all, java.time.Instant.ofEpochSecond(epoch(s)), session)
++        assertEquals(listOf(yesterday), at("2026-10-08T17:00:00+03:00"))
++        assertEquals(listOf(yesterday), at("2026-10-08T18:24:59+03:00"))
++        assertEquals(listOf(yesterday, today), at("2026-10-08T18:25:00+03:00"))
++        assertEquals(listOf(yesterday), at("2026-10-08T20:00:00+03:00", null))
++        assertEquals(listOf(yesterday), at("2026-10-08T20:00:00+03:00", end - 86400))
++    }
++
++    @Test fun v19EarlyCandidateStillEntersOnlyAfterActualCleanConfirmation() {
++        val closes = List(350) { i -> 80.0 + i * 0.16 + sin(i / 3.2) * 2.1 }
++        val market = patternBars(List(350) { i -> 100.0 + i * 0.07 + sin(i / 5.0) * 0.5 })
++        val xs = patternBars(closes)
++        val idx = 299
++        val d = AnalysisCore.historicalDecisionAt(xs, idx, market)!!
++        val initial = AnalysisCore.cleanSetup(d, stability = v19Stability(62.0))
++        assertEquals("ERKEN UYARI", initial.status)
++        val e = AnalysisCore.evaluateSetupChain(xs, idx, market, d, 20, stability = v19Stability(62.0))!!
++        assertTrue(e.tradeOpened)
++        assertEquals("TEYİT GELDİ", e.confirmationStatus)
++        run {
++            val step = e.confirmationBars!!
++            assertTrue(step in 1..5)
++            val cd = AnalysisCore.historicalDecisionAt(xs, idx + step, market)!!
++            val raw = AnalysisCore.cleanSetup(cd)
++            val st = AnalysisCore.temporalStabilityAt(xs, idx + step, market, raw.direction)
++            assertTrue(AnalysisCore.cleanSetup(cd, stability = st).hardGate)
++            assertNotEquals(e.confirmationDate, e.tradeEntryDate)
++        }
++    }
++
+ }
